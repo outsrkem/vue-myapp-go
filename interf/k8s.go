@@ -14,3 +14,7 @@ type K8sInterface interface {
 	K8sBodyDel(address string)
 	//获取集群Deployment
 }
+
+type K8sNamespaceGetI interface {
+	K8sNamespaceGet(address string)
+}

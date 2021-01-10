@@ -36,16 +36,29 @@ func K8sRouter(r *gin.Engine) {
 
 		//查询k8s集群所有配置信息
 		v2Group.GET("/cluster", func(c *gin.Context) {
+
 			Qtype := c.Query("type")
+
 			if Qtype == "cluster" || Qtype == "" {
+
 				var face interf.K8sInterface
 				var json impl.K8sBodyList
+
 				face = json
+
 				c.JSON(http.StatusOK, face.K8sBodyGetAll())
+
 			} else if Qtype == "namespaces" {
-				c.JSON(http.StatusOK, gin.H{
-					"status": Qtype + "还未定义",
-				})
+
+				address := c.Query("address")
+
+				var face interf.K8sNamespaceGetI
+				var data impl.K8sNamespace
+
+				face = &data
+				face.K8sNamespaceGet(address)
+				c.JSON(http.StatusOK, data)
+
 			} else if Qtype == "workingload" {
 				//获取Query参数
 				namespaces := c.Query("namespaces")
