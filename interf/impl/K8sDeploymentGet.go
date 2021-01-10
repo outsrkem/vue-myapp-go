@@ -18,10 +18,19 @@ import (
 	根据指定参数，连接对应集群，获取deployment信息
 */
 func (k *K8sDeploymentList) K8sDeploymentGet(namespace, control, address string) {
+
 	//声明Items结构体，用来映射数据库获取到的k8s配置信息，如连接证书等
 	var item Items
+
 	//查询k8s数据库信息
 	dpm := db.Get([]byte(address), db.K8sList)
+	if dpm == nil {
+		k.MetaInfo.Status = 502
+		k.MetaInfo.Msg = "K8sDeploymentGet获取数据库错误"
+		k.MetaInfo.RequestTime = time.Now().Unix()
+		return
+	}
+
 	//数据库[]byte数据反序列化为Items结构体
 	err := json.Unmarshal(dpm.Value, &item)
 	if err != nil {

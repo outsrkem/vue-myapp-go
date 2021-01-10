@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"github.com/xujiajun/nutsdb"
+	"log"
 )
 
 /*
@@ -14,21 +15,19 @@ func Get(key []byte, bucket string) *nutsdb.Entry {
 	db, _ := nutsdb.Open(opt)
 	defer db.Close()
 
-	//var list []byte
 	var list *nutsdb.Entry
 
 	if err := db.View(
 		func(tx *nutsdb.Tx) error {
-			if e, err := tx.Get(bucket, key); err != nil {
-				return nil
-			} else {
-				list = e
-				//fmt.Println(string(e.Value))
+			e, err := tx.Get(bucket, key)
+			if err != nil {
+				fmt.Println(err)
+				return err
 			}
+			list = e
 			return nil
 		}); err != nil {
-		//log.Fatal(err)
-		fmt.Println(err)
+		log.Println(err)
 	}
 	return list
 }

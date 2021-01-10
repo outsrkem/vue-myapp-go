@@ -35,6 +35,9 @@ func main() {
 	//k8s功能路由
 	router.K8sRouter(r)
 
+	//用户功能路由
+	router.UserRouter(r)
+
 	//服务运行端口
 	err := r.Run(":" + cast.ToString(port))
 	if err != nil {

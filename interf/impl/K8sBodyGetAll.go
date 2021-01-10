@@ -25,6 +25,14 @@ func (k K8sBodyList) K8sBodyGetAll() *K8sList {
 		},
 	}
 
+	//判断数据是否存在
+	if dbList == nil {
+		k8sList.MetaInfo.Status = 502
+		k8sList.MetaInfo.Msg = "k8sGetAll查询错误"
+		k8sList.MetaInfo.RequestTime = time.Now().Unix()
+		return nil
+	}
+
 	k8sList.MetaInfo.Status = 200
 	k8sList.MetaInfo.Msg = "success"
 	k8sList.MetaInfo.RequestTime = time.Now().Unix()

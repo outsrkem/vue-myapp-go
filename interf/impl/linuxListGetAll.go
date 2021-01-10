@@ -17,6 +17,12 @@ func (l *LinuxList) GetAll() {
 	//查询服务器，获取数据索引和账号信息
 	index := db.GetIndex(db.LinuxList)
 	data := db.GetAll(db.LinuxList)
+	if data == nil {
+		l.MetaInfo.Status = 502
+		l.MetaInfo.Msg = "GetAll获取数据库错误"
+		l.MetaInfo.RequestTime = time.Now().Unix()
+		return
+	}
 
 	l.MetaInfo.Status = 200
 	l.MetaInfo.Msg = "success"

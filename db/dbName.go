@@ -6,3 +6,4 @@ package db
 
 const K8sList = "K8sList"
 const LinuxList = "LinuxList"
+const UserTable = "UserTable"
