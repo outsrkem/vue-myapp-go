@@ -45,6 +45,7 @@ func (k K8sBodyList) K8sBodyGetAll() *K8sList {
 		item.CaCrt = ""
 		item.ClientCrt = ""
 		item.ClientKey = ""
+		item.ID = i + 1
 		k8sList.Response.Items[i] = item
 	}
 

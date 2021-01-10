@@ -8,8 +8,9 @@ type K8sInterface interface {
 	K8sBodyAdd()
 	//查询数据库所有k8s集群信息
 	K8sBodyGetAll() *impl.K8sList
-	//更加请求参数，查询对应deployment信息
+	//根据请求参数，查询对应deployment信息
 	K8sDeploymentGet(namespace, control, address string)
 	//删除指定k8s集群数据
 	K8sBodyDel(address string)
+	//获取集群Deployment
 }

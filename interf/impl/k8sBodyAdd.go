@@ -12,13 +12,9 @@ import (
 */
 func (k K8sBodyList) K8sBodyAdd() {
 
-	//获取数据总数
-	index := db.GetIndex(db.K8sList)
-
 	//创建items的结构体类对象，并赋值
 	var item Items
 
-	item.ID = index + 1
 	item.ClusterName = k.Clusters[0].Name
 	item.UserName = k.Users[0].Name
 	item.CurrentContext = k.CurrentContext
