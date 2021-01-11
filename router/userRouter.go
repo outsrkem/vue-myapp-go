@@ -17,7 +17,7 @@ func UserRouter(r *gin.Engine) {
 		})
 
 		v3Group.DELETE("/table", func(c *gin.Context) {
-
+			method.UserDeleteMethod(c)
 		})
 	}
 }
