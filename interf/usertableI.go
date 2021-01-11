@@ -7,4 +7,5 @@ type UserTableI interface {
 	UserDel(username string)
 	UserGet(username string)
 	UserGetAll() *[]impl.UserTable
+	UserLogin() string
 }

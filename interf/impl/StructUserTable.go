@@ -8,4 +8,5 @@ type UserTable struct {
 	UpdateTime int64  `json:"update_time"`
 	Role       string `json:"role"`
 	Status     string `json:"status"`
+	Token      string `json:"token"`
 }

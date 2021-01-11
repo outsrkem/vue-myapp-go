@@ -21,22 +21,15 @@ func init() {
 func main() {
 	//命令行解析工具
 	flag.Parse()
+
 	//使用默认中间件创建一个gin路由器
 	r := gin.Default()
+
 	//解决跨域请求中间件
 	r.Use(middle.Cors())
 
-	// "/"请求路由
+	// 服务路由请求
 	router.Index(r)
-
-	//Linux功能路由
-	router.LinuxRouter(r)
-
-	//k8s功能路由
-	router.K8sRouter(r)
-
-	//用户功能路由
-	router.UserRouter(r)
 
 	//服务运行端口
 	err := r.Run(":" + cast.ToString(port))
