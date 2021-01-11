@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
+	"menu/router/method"
 )
 
 /*
@@ -10,6 +10,6 @@ import (
 */
 func Index(r *gin.Engine) {
 	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, "没有请求参数")
+		method.IndexMethod(c)
 	})
 }
