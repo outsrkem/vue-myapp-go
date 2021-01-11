@@ -18,7 +18,7 @@ git clone https://gitee.com/Outsrkem/vue-myapp-go.git
 
 windows：
 
-```go
+```bash
 //设置windows编译环境
 SET CGO_ENABLED=0	// 禁用CGO
 SET GOOS=windows  	// 目标平台是linux
@@ -33,7 +33,7 @@ app.exe
 
 linux：
 
-```go
+```bash
 //设置linux编译环境
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
 
