@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"menu/middle"
 	"menu/router/method"
 )
 
@@ -10,7 +11,9 @@ import (
 */
 func Index(r *gin.Engine) {
 
-	r.GET("/", method.IndexMethod)
+	r.GET("/login", method.LoginMethod)
+
+	r.Use(middle.AuthToken())
 
 	//Linux服务路由
 	v1Group := r.Group("/api/v1/common/resource")

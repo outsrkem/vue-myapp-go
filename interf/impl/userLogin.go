@@ -21,7 +21,7 @@ func (u *UserTable) UserLogin() string {
 	}
 	if u.Password == user.Password {
 		u.Password = ""
-		token := middle.Token()
+		token := middle.Token(user.UserName, user.Role)
 		u.Token = token
 	} else {
 		return "u.UserName + 密码错误"

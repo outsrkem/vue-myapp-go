@@ -12,18 +12,17 @@ const (
 
 //自定义Claims
 type CustomClaims struct {
-	UserId int64
 	jwt.StandardClaims
 }
 
-func Token() string {
+func Token(username, role string) string {
 	//生成token
-	maxAge := 60 * 60 * 24
+	maxAge := 60 * 10 //过期时间
 	customClaims := &CustomClaims{
-		UserId: 11, //用户id
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Duration(maxAge) * time.Second).Unix(), // 过期时间，必须设置
-			Issuer:    "jerry",                                                    // 非必须，也可以填充用户名，
+			Issuer:    username,                                                   // 非必须，也可以填充用户名，
+			Audience:  role,                                                       // 非必须
 		},
 	}
 	//采用HMAC SHA256加密算法
@@ -33,7 +32,7 @@ func Token() string {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("token: %v\n", tokenString)
+	//fmt.Printf("token: %v\n", tokenString)
 	return tokenString
 
 	////解析token
