@@ -14,13 +14,15 @@ var (
 	port          int
 	adminUser     string
 	adminPassword string
+	onOff         bool
 )
 
-//初始化函数，用于设置端口
+//初始化函数，用于命令行接收端口、账号等信息
 func init() {
 	flag.IntVar(&port, "port", 8080, "set server port")
 	flag.StringVar(&adminUser, "user", "admin", "set admin username")
 	flag.StringVar(&adminPassword, "pwd", "admin", "set admin password")
+	flag.BoolVar(&onOff, "n", false, "true/false on backup")
 }
 
 func main() {
@@ -29,6 +31,8 @@ func main() {
 
 	//初始化登录用户，初次运行默认账号为：admin，密码：admin，如果要指定管理员账号，可以查询命令行操作
 	impl.Initialize(adminUser, adminPassword)
+	//备份
+	impl.BackFile(onOff)
 
 	//使用默认中间件创建一个gin路由器
 	r := gin.Default()

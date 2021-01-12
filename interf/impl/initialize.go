@@ -7,6 +7,9 @@ import (
 	"time"
 )
 
+/*
+	初始化账号密码
+*/
 func Initialize(adminUser, adminPassword string) {
 
 	admin := UserTable{
