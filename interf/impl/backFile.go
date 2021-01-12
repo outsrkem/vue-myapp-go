@@ -5,6 +5,10 @@ import (
 	"github.com/xujiajun/nutsdb"
 )
 
+/*
+	备份功能
+*/
+
 func BackFile(onOff bool) {
 	if onOff {
 		opt := nutsdb.DefaultOptions
