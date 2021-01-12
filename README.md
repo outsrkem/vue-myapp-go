@@ -89,80 +89,69 @@ Usage of menu.exe:
 **操作登录用户**
 
 - 登录：/login?username=admin&password=admin
-
   - GET请求
   - 返回值token：其它所有操作均需要在header上添加`Token`（首字母大写）字段和Token值
 
-  
+
 
 - 查询所有登录用户：/api/v1/common/user/table
-
   - GET请求：需要`admin`或`general`权限
 
-  
+
 
 - 添加用户：/api/v1/common/user/table?username=huang&password=123123&role=general&status=0
-
   - POST请求：需要`admin`权限
+  - 请求参数：role用户权限，分为admin和general，status为用户状态，暂时没有
 
-  
+
 
 - 删除用户：/api/v1/common/user/table?username=huang
-
   - DELETE请求：需要`admin`权限
 
-  
+
 
 **操作linux服务器信息**
 
 - 添加linux账号：/api/v1/common/resource/monitor?user=root&ip=192.168.40.102&pwd=123123&port=22
-
   - POST请求：如果账号无法实际连接服务器，添加失败，需要`admin`权限
 
-  
+
 
 - 查看linuxl所有服务器资源：/api/v1/common/resource/monitor
-
   - GET请求：需要`admin`或`general`权限
 
-  
+
 
 - 删除linux服务器账号：/api/v1/common/resource/monitor?ip=192.168.40.102
-
   - DELETE请求：需要`admin`权限
 
-  
+
 
 **操作k8s集群信息**
 
 - 添加k8s集群：/api/v1/common/kubernetes/cluster
-
   - POST请求：需要`admin`权限
   - 请求参数：body中的raw格式，添加json格式的k8sconfig集群配置文件
 
-  
+
 
 - 查看k8s所有集群：/api/v1/common/kubernetes/cluster?type=cluster
-
   - GET请求：需要`admin`或`general`权限
   - 请求参数：type为查看的类型，有cluster，namespaces，workingload
 
-  
+
 
 - 查看指定集群的命名空间（namespaces）：/api/v1/common/kubernetes/cluster?type=namespaces&address=集群连接地址
-
   - GET请求：`address`是k8sconfig配置文件中的集群连接地址
 
-  
+
 
 - 查看指定集群的deployment信息：/api/v1/common/kubernetes/cluster?type=workingload&address=集群连接地址&namespaces=default&control=deployments
-
   - GET请求：需要`admin`或`general`权限
   - 请求参数：其中namespaces值是名称空间名字，control和type值是固定的
 
-  
+
 
 - 删除k8s集群：/api/v1/common/kubernetes/cluster?address=集群连接地址
-
   - DELETE请求：需要`admin`权限
 
