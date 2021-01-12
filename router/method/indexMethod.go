@@ -7,6 +7,9 @@ import (
 	"net/http"
 )
 
+/*
+	用户登录
+*/
 func LoginMethod(c *gin.Context) {
 
 	username := c.Query("username")

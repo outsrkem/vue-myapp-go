@@ -7,6 +7,10 @@ import (
 	"net/http"
 )
 
+/*
+	查询Linux服务器账号信息
+*/
+
 func LinuxGetMehod(c *gin.Context) {
 	//创建接口对象
 	var face interf.LinuxInterface

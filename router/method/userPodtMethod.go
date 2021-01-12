@@ -7,6 +7,9 @@ import (
 	"net/http"
 )
 
+/*
+	添加登录用户
+*/
 func UserPostMethod(c *gin.Context) {
 	//接收query参数
 	username := c.Query("username")
@@ -23,9 +26,10 @@ func UserPostMethod(c *gin.Context) {
 			Role:     role,
 			Status:   status,
 		}
-		face = &data
 		//调用接口add方法
+		face = &data
 		face.UserAdd()
+
 		c.JSON(http.StatusOK, gin.H{
 			"status": "用户添加成功",
 		})

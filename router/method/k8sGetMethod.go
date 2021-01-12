@@ -7,6 +7,9 @@ import (
 	"net/http"
 )
 
+/*
+	查询k8s集群配置信息
+*/
 func K8sGetMethod(c *gin.Context) {
 	Qtype := c.Query("type")
 

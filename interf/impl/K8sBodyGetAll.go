@@ -28,9 +28,9 @@ func (k K8sBodyList) K8sBodyGetAll() *K8sList {
 	//判断数据是否存在
 	if dbList == nil {
 		k8sList.MetaInfo.Status = 502
-		k8sList.MetaInfo.Msg = "k8sGetAll查询错误"
+		k8sList.MetaInfo.Msg = "k8sGetAll查询为空"
 		k8sList.MetaInfo.RequestTime = time.Now().Unix()
-		return nil
+		return &k8sList
 	}
 
 	k8sList.MetaInfo.Status = 200

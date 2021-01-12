@@ -7,6 +7,9 @@ import (
 	"net/http"
 )
 
+/*
+	添加Linux服务器账号信息
+*/
 func LinuxPostMethod(c *gin.Context) {
 	//获取query的参数
 	user := c.Query("user")
@@ -19,8 +22,10 @@ func LinuxPostMethod(c *gin.Context) {
 	if user != "" && ip != "" && pwd != "" && port != "" {
 		var face interf.LinuxInterface
 		var data impl.LinuxList
+
 		face = &data
 		face.Add(&linuxData)
+
 		c.JSON(http.StatusOK, data)
 	} else {
 		c.JSON(http.StatusOK, gin.H{

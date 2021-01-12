@@ -5,22 +5,30 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
+	"menu/interf/impl"
 	"menu/middle"
 	"menu/router"
 )
 
 var (
-	port int
+	port          int
+	adminUser     string
+	adminPassword string
 )
 
 //初始化函数，用于设置端口
 func init() {
-	flag.IntVar(&port, "p", 8080, "set server port")
+	flag.IntVar(&port, "port", 8080, "set server port")
+	flag.StringVar(&adminUser, "user", "admin", "set admin username")
+	flag.StringVar(&adminPassword, "pwd", "admin", "set admin password")
 }
 
 func main() {
 	//命令行解析工具
 	flag.Parse()
+
+	//初始化登录用户，初次运行默认账号为：admin，密码：admin，如果要指定管理员账号，可以查询命令行操作
+	impl.Initialize(adminUser, adminPassword)
 
 	//使用默认中间件创建一个gin路由器
 	r := gin.Default()

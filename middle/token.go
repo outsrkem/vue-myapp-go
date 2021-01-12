@@ -17,7 +17,7 @@ type CustomClaims struct {
 
 func Token(username, role string) string {
 	//生成token
-	maxAge := 60 * 10 //过期时间
+	maxAge := 60 * 30 //过期时间
 	customClaims := &CustomClaims{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Duration(maxAge) * time.Second).Unix(), // 过期时间，必须设置
@@ -30,30 +30,34 @@ func Token(username, role string) string {
 	//私钥加密
 	tokenString, err := token.SignedString([]byte(SECRETKEY))
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("SignedString加密错误：", err)
+		return "SignedString加密错误"
 	}
 	//fmt.Printf("token: %v\n", tokenString)
 	return tokenString
-
-	////解析token
-	//ret,err :=ParseToken(tokenString)
-	//if err!=nil {
-	//	fmt.Println(err)
-	//}
-	//fmt.Printf("userinfo: %v\n", ret)
 }
 
 //解析token
 func ParseToken(tokenString string) (*CustomClaims, error) {
+	//解析token
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		_, ok := token.Method.(*jwt.SigningMethodHMAC)
+		if !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return []byte(SECRETKEY), nil
 	})
+
+	if err != nil {
+		fmt.Println("token解析错误：", err)
+		return nil, err
+	}
+
+	//解析为CustomClaims结构体
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
 		return claims, nil
 	} else {
+		fmt.Println("claims解析错误：", err)
 		return nil, err
 	}
 }
