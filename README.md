@@ -25,6 +25,7 @@ windows：
 SET CGO_ENABLED=0	# 禁用CGO
 SET GOOS=windows  	# 目标平台是linux
 SET GOARCH=amd64  	# 目标处理器架构是amd64
+SET GOPROXY=https://goproxy.io #设置代理，否则有可能依赖包无法下载
 
 # 编译
 go build -o app.exe
@@ -48,7 +49,10 @@ linux：
 
 ```bash
 # 设置linux编译环境
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
+export CGO_ENABLED=0 
+export GOOS=linux 
+export GOARCH=amd64 go build
+export GOPROXY=https://goproxy.io
 
 # 编译
 go build -o app
