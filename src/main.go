@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"mana/src/routers"
 )
-import "mana/src/routers"
 
 func main() {
-	r := gin.Default()
 
+	r := gin.Default()
 	// 服务路由请求
 	routers.Index(r)
 
@@ -17,4 +17,5 @@ func main() {
 	if err != nil {
 		fmt.Println("服务运行错误")
 	}
+
 }
