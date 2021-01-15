@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"mana/src/method/linuxServe"
+	"mana/src/controllers/user"
 	"net/http"
 )
 
@@ -15,10 +15,13 @@ func Index(r *gin.Engine) {
 	})
 
 	//Linux服务路由
-	v1Group := r.Group("/api/v1/common/resource")
+	v1Group := r.Group("/api/v1")
 	{
+		// 用户注册
+		v1Group.GET("/common/register", user.InstUser)
+		v1Group.GET("/common/login", user.Login)
 		//获取服务器性能列表
-		v1Group.GET("/monitor", linuxServe.LinuxGetMethod)
+		//v1Group.GET("/common/resource/monitor", linuxServe.LinuxGetMethod)
 
 		//服务器列表添加
 		//v1Group.POST("/monitor", middle.Admin, method.LinuxPostMethod)

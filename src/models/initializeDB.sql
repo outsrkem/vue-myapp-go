@@ -1,0 +1,19 @@
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `mana` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+
+USE `mana`;
+
+SET FOREIGN_KEY_CHECKS=0;
+
+CREATE TABLE `user` (
+    `ID` int(255) NOT NULL AUTO_INCREMENT,
+    `USERID` varchar(255) NOT NULL COMMENT '用户id',
+    `USERNAME` varchar(255) NOT NULL COMMENT '用户名',
+    `NICKNAME` varchar(255) DEFAULT NULL COMMENT '昵称',
+    `ROLE` int(1) NOT NULL COMMENT '角色',
+    `PASSWD` varchar(255) NOT NULL COMMENT '密码',
+    `CHANGE` datetime DEFAULT NULL COMMENT '最近一次密码修改时间',
+    `EXPIRES` varchar(255) DEFAULT NULL COMMENT '密码过期时间',
+    `INACTIVE` int(11) NOT NULL COMMENT '用户状态',
+    `CREATETIME` datetime DEFAULT NULL COMMENT '创建时间',
+    PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
