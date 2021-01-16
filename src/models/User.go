@@ -3,24 +3,25 @@ package models
 import (
 	"fmt"
 	"mana/src/connections/database/mysql"
+	"strconv"
 	"time"
 )
 
 // 用户表
 type UserInfo struct {
-	ID         int    `json:"id"`         // id
-	USERID     int    `json:"name"`       // 用户id
+	ID         string `json:"id"`         // id
+	USERID     string `json:"name"`       // 用户id
 	USERNAME   string `json:"username"`   // 用户名
 	NICKNAME   string `json:"nickname"`   // 昵称
-	ROLE       int    `json:"role"`       // 角色
+	ROLE       string `json:"role"`       // 角色
 	PASSWD     string `json:"passwd"`     // 密码
 	UPDATETIME string `json:"change"`     // 最近一次密码修改时间
-	EXPIRES    int8   `json:"expires"`    // 密码过期时间
-	INACTIVE   int8   `json:"inactive"`   // 用户状态
+	EXPIRES    string `json:"expires"`    // 密码过期时间
+	INACTIVE   string `json:"inactive"`   // 用户状态
 	CREATETIME string `json:"createtime"` // 创建时间
 }
 
-func InstUser(name string, passwd string) int64 {
+func InstUser(name string, passwd string) string {
 	atTimes := time.Now().Unix()
 	atTimesStr := time.Unix(atTimes, 0).Format("2006-01-02 15:04:05")
 	uid := time.Now().UnixNano()
@@ -30,10 +31,10 @@ func InstUser(name string, passwd string) int64 {
 	_, err := mysql.DB.Exec(sqlStr, uid, name, nickname, role, passwd, atTimesStr, expires, inactive, atTimesStr)
 	if err != nil {
 		fmt.Printf("insert failed, err:%v\n", err)
-		return 123
+		return "123"
 	}
-
-	return uid
+	// 转换为string类型
+	return strconv.FormatInt(uid, 10)
 }
 
 // 查询单条

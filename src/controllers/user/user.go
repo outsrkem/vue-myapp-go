@@ -3,7 +3,7 @@ package user
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"mana/src/filters/utility"
+	"mana/src/filters/util"
 	"mana/src/models"
 	"mana/src/models/impl"
 	"net/http"
@@ -30,7 +30,7 @@ func InstUser(c *gin.Context) {
 		return
 	}
 	// 加密密码
-	encodePassword, _ := utility.PasswordBcrypt(password)
+	encodePassword, _ := util.PasswordBcrypt(password)
 	userId := models.InstUser(username, encodePassword)
 
 	var user impl.UserRegisterStruct
@@ -65,9 +65,9 @@ func Login(c *gin.Context) {
 	}
 
 	result, _ := models.SelectUserQueryRow(username)
-	fmt.Println("登录用户",username)
+	fmt.Println("登录用户", username)
 	// 校验密码
-	err := utility.PasswordAuthentication(loginPassword, result.PASSWD)
+	err := util.PasswordAuthentication(loginPassword, result.PASSWD)
 	if err != nil {
 		fmt.Println("登录错误", err)
 		var user impl.MetaInfo
@@ -79,6 +79,10 @@ func Login(c *gin.Context) {
 		var user impl.UserLoginStruct
 		meta := &user.MetaInfo
 		resp := &user.Response
+
+		// 生成token
+		token := util.EncodeAuthToken(result.USERID, result.USERNAME, result.ROLE)
+
 		// 构造返回数据
 		meta.RequestTime = time.Now().UnixNano()
 		meta.Msg = "login successfully"
@@ -88,7 +92,7 @@ func Login(c *gin.Context) {
 		resp.Nickname = result.NICKNAME
 		resp.Role = result.ROLE
 		resp.Expires = result.EXPIRES
-		resp.Token = "this is token"
+		resp.Token = token
 		c.JSON(http.StatusOK, &user)
 	}
 }

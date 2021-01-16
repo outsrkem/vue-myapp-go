@@ -17,6 +17,6 @@ type metaInfo struct {
 	RequestTime int64 `json:"requestTime"`
 }
 type response struct {
-	Userid int64 `json:"userid"`
+	Userid string `json:"userid"`
 	Username string `json:"username"`
 }
