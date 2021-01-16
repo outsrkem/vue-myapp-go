@@ -18,8 +18,8 @@ func Index(r *gin.Engine) {
 	v1Group := r.Group("/api/v1")
 	{
 		// 用户注册
-		v1Group.GET("/common/register", user.InstUser)
-		v1Group.GET("/common/login", user.Login)
+		v1Group.POST("/common/register", user.InstUser)
+		v1Group.POST("/common/login", user.Login)
 		//获取服务器性能列表
 		//v1Group.GET("/common/resource/monitor", linuxServe.LinuxGetMethod)
 

@@ -17,7 +17,7 @@ var MaxOpenConn = 10
 var MaxIdleConn = 5
 
 func InitDB() (err error) {
-	dsn := fmt.Sprintf("%s:%s@%s(%s:%d)/%s", USERNAME, PASSWORD, NETWORK, SERVER, PORT, DATABASE)
+	dsn := fmt.Sprintf("%s:%s@%s(%s:%d)/%s?charset=utf8&parseTime=true", USERNAME, PASSWORD, NETWORK, SERVER, PORT, DATABASE)
 	DB, err = sql.Open("mysql", dsn)
 	if err != nil {
 		fmt.Println("a连接失败", err)

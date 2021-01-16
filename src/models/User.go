@@ -15,10 +15,9 @@ type UserInfo struct {
 	ROLE       int    `json:"role"`       // 角色
 	PASSWD     string `json:"passwd"`     // 密码
 	UPDATETIME string `json:"change"`     // 最近一次密码修改时间
-	EXPIRES    string `json:"expires"`    // 密码过期时间
+	EXPIRES    int8   `json:"expires"`    // 密码过期时间
 	INACTIVE   int8   `json:"inactive"`   // 用户状态
 	CREATETIME string `json:"createtime"` // 创建时间
-
 }
 
 func InstUser(name string, passwd string) int64 {
@@ -28,31 +27,27 @@ func InstUser(name string, passwd string) int64 {
 	nickname := name
 	role, expires, inactive := 3, 2, 1
 	sqlStr := `INSERT INTO user (USERID, USERNAME, NICKNAME, ROLE, PASSWD, UPDATETIME, EXPIRES, INACTIVE, CREATETIME) VALUES (?,?,?,?,?,?,?,?,?);`
-	ret, err := mysql.DB.Exec(sqlStr, uid, name, nickname, role, passwd, atTimesStr, expires, inactive, atTimesStr)
+	_, err := mysql.DB.Exec(sqlStr, uid, name, nickname, role, passwd, atTimesStr, expires, inactive, atTimesStr)
 	if err != nil {
 		fmt.Printf("insert failed, err:%v\n", err)
 		return 123
 	}
-	theID, err := ret.LastInsertId()
-	if err != nil {
-		fmt.Printf("get lastinsert ID failed, err:%v\n", err)
-		return 456
-	}
-	fmt.Printf("insert success, the id is %d.\n", theID)
-	return theID
+
+	return uid
 }
 
 // 查询单条
-func SelectUserQueryRow(username string) UserInfo {
+func SelectUserQueryRow(username string) *UserInfo {
 	var u UserInfo
-	sqlStr := `SELECT * FROM  user WHERE USERNAME = ?`
+	sqlStr := `SELECT ID,USERID,USERNAME,NICKNAME,ROLE,PASSWD,EXPIRES,INACTIVE,CREATETIME,UPDATETIME FROM  user WHERE USERNAME = ?`
 	var row = mysql.DB.QueryRow(sqlStr, username)
-	err := row.Scan(&u.ID, &u.USERID, &u.USERNAME, &u.NICKNAME, &u.ROLE, &u.PASSWD, &u.UPDATETIME, &u.EXPIRES, &u.INACTIVE, &u.CREATETIME)
+	//err := row.Scan(u.ID, u.USERID, u.USERNAME, u.NICKNAME, u.ROLE, u.PASSWD, u.UPDATETIME, u.EXPIRES, u.INACTIVE, u.CREATETIME)
+	err := row.Scan(&u.ID, &u.USERID, &u.USERNAME, &u.NICKNAME, &u.ROLE, &u.PASSWD, &u.EXPIRES, &u.INACTIVE, &u.CREATETIME, &u.UPDATETIME)
 	if err != nil {
 		fmt.Println("asd", err.Error())
 
 	}
-	return u
+	return &u
 }
 
 // 查询多条
