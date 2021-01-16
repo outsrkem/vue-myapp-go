@@ -37,7 +37,7 @@ func InstUser(name string, passwd string) int64 {
 }
 
 // 查询单条
-func SelectUserQueryRow(username string) *UserInfo {
+func SelectUserQueryRow(username string) (*UserInfo, error) {
 	var u UserInfo
 	sqlStr := `SELECT ID,USERID,USERNAME,NICKNAME,ROLE,PASSWD,EXPIRES,INACTIVE,CREATETIME,UPDATETIME FROM  user WHERE USERNAME = ?`
 	var row = mysql.DB.QueryRow(sqlStr, username)
@@ -47,7 +47,7 @@ func SelectUserQueryRow(username string) *UserInfo {
 		fmt.Println("asd", err.Error())
 
 	}
-	return &u
+	return &u, err
 }
 
 // 查询多条

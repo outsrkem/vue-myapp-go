@@ -4,7 +4,7 @@ type UserLoginStruct struct {
 	Response Response `json:"response"`
 }
 type MetaInfo struct {
-	Status string `json:"status"`
+	Code string `json:"code"`
 	Msg string `json:"msg"`
 	RequestTime int64 `json:"requestTime"`
 }
