@@ -24,7 +24,6 @@ func InstUser(c *gin.Context) {
 	id := models.InstUser(username, encodePassword)
 	c.JSON(http.StatusCreated, gin.H{
 		"id":       id,
-		"num":      id,
 		"username": userRegisterInfo.Username,
 	})
 }
