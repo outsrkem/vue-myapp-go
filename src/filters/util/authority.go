@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	SECRETLY = "T3Hhkw1YLTMwpTTQIuSS8Z1ufuqixAUcDcLIZbn1u/H1liPtkv1VGy9tptz8Jn2ZYjlvz1qXcfJXfGSw" //私钥
+	SECRETLY = "T3Hhkw1YLTMwpTTQIuSS8Z1ufuqixAUcDcLIZbn1u/H1liPtkv1VGy9tptz8Jn2ZYjlvz1qXcfJXfGSwgNbuo50ZkRYgv4IQ42O8iS" //私钥
 )
 
 //自定义Claims
@@ -18,7 +18,7 @@ type CustomClaims struct {
 // 生成token
 func EncodeAuthToken(uid string, username string, role string) string {
 	//生成token
-	maxAge := 60 * 30 //过期时间
+	maxAge := 60 * 30 //过期时间(秒)
 	customClaims := &CustomClaims{
 		StandardClaims: jwt.StandardClaims{
 			Id:        uid,                                                        // 用户id

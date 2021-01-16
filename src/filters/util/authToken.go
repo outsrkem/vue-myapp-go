@@ -15,8 +15,8 @@ func AuthToken() gin.HandlerFunc {
 		token := c.Request.Header.Get("X-Auth-Token")
 		if token == "" {
 			var metaInfo impl.GeneralErrorStruct
-			fmt.Println("请求头中未携带token,3025")
-			metaInfo.Code = "3025"
+			fmt.Println("请求头中未携带token,403")
+			metaInfo.Code = "403"
 			metaInfo.Msg = "The token X-Auth-Token is not carried in the request header"
 			metaInfo.RequestTime = time.Now().UnixNano()
 			c.JSON(http.StatusForbidden, &metaInfo)
@@ -27,11 +27,11 @@ func AuthToken() gin.HandlerFunc {
 		claims, err := ParseToken(token)
 		if err != nil {
 			var metaInfo impl.GeneralErrorStruct
-			fmt.Println("token格式无效或已过期,3022")
-			metaInfo.Code = "3022"
+			fmt.Println("token格式无效或已过期,401")
+			metaInfo.Code = "401"
 			metaInfo.Msg = "The token format is invalid or expired"
 			metaInfo.RequestTime = time.Now().UnixNano()
-			c.JSON(http.StatusForbidden, &metaInfo)
+			c.JSON(http.StatusUnauthorized, &metaInfo)
 			c.Abort()
 			return
 		}

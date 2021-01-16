@@ -31,7 +31,18 @@ func InstUser(c *gin.Context) {
 	}
 	// 加密密码
 	encodePassword, _ := util.PasswordBcrypt(password)
-	userId := users.InstUser(username, encodePassword)
+	// 把用户信息插入到数据库
+	userId, err := users.InstUser(username, encodePassword)
+	if err != nil {
+		// 插入失败
+		fmt.Println("把用户信息插入到数据库失败")
+		var metaInfo impl.GeneralErrorStruct
+		metaInfo.Code = "500"
+		metaInfo.Msg = "internal error"
+		metaInfo.RequestTime = time.Now().UnixNano()
+		c.JSON(http.StatusInternalServerError, &metaInfo)
+		return
+	}
 
 	var user impl.UserRegisterStruct
 	meta := &user.MetaInfo
@@ -102,7 +113,9 @@ func Login(c *gin.Context) {
 func FindByUserinfo(c *gin.Context) {
 	//fmt.Println(c.MustGet("uid").(string))
 	//fmt.Println(c.MustGet("role").(string))
-	uid := c.MustGet("uid").(string)
+	// 若有高权限的token，则可以查询其他用户，则此处需要传递用户id，后面优化
+	//uid := c.MustGet("uid").(string)
+	uid := c.Param("uid") // 获取路径参数
 	result, err := users.SelectUidUserQueryRow(uid)
 	if err != nil {
 		fmt.Println("用户信息查询异常", err)
@@ -118,7 +131,7 @@ func FindByUserinfo(c *gin.Context) {
 
 		// 构造返回数据
 		meta.RequestTime = time.Now().UnixNano()
-		meta.Msg = "login successfully"
+		meta.Msg = "successfully"
 		meta.Code = "200"
 		resp.Userid = result.USERID
 		resp.Username = result.USERNAME
