@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"mana/src/filters/util"
-	"mana/src/models"
 	"mana/src/models/impl"
+	"mana/src/models/users"
 	"net/http"
 	"time"
 )
@@ -31,7 +31,7 @@ func InstUser(c *gin.Context) {
 	}
 	// 加密密码
 	encodePassword, _ := util.PasswordBcrypt(password)
-	userId := models.InstUser(username, encodePassword)
+	userId := users.InstUser(username, encodePassword)
 
 	var user impl.UserRegisterStruct
 	meta := &user.MetaInfo
@@ -64,7 +64,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	result, _ := models.SelectUserQueryRow(username)
+	result, _ := users.SelectUserQueryRow(username)
 	fmt.Println("登录用户", username)
 	// 校验密码
 	err := util.PasswordAuthentication(loginPassword, result.PASSWD)
@@ -93,6 +93,38 @@ func Login(c *gin.Context) {
 		resp.Role = result.ROLE
 		resp.Expires = result.EXPIRES
 		resp.Token = token
+		c.JSON(http.StatusOK, &user)
+	}
+}
+
+// 获取用户信息
+
+func FindByUserinfo(c *gin.Context) {
+	//fmt.Println(c.MustGet("uid").(string))
+	//fmt.Println(c.MustGet("role").(string))
+	uid := c.MustGet("uid").(string)
+	result, err := users.SelectUidUserQueryRow(uid)
+	if err != nil {
+		fmt.Println("用户信息查询异常", err)
+		var user impl.MetaInfo
+		user.RequestTime = time.Now().UnixNano()
+		user.Msg = "Logon failed"
+		user.Code = "1"
+		c.JSON(http.StatusUnauthorized, &user)
+	} else {
+		var user impl.UserLoginStruct
+		meta := &user.MetaInfo
+		resp := &user.Response
+
+		// 构造返回数据
+		meta.RequestTime = time.Now().UnixNano()
+		meta.Msg = "login successfully"
+		meta.Code = "200"
+		resp.Userid = result.USERID
+		resp.Username = result.USERNAME
+		resp.Nickname = result.NICKNAME
+		resp.Role = result.ROLE
+		resp.Expires = result.EXPIRES
 		c.JSON(http.StatusOK, &user)
 	}
 }

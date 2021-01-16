@@ -1,4 +1,4 @@
-package models
+package users
 
 import (
 	"fmt"
@@ -41,6 +41,7 @@ func InstUser(name string, passwd string) string {
 func SelectUserQueryRow(username string) (*UserInfo, error) {
 	var u UserInfo
 	sqlStr := `SELECT ID,USERID,USERNAME,NICKNAME,ROLE,PASSWD,EXPIRES,INACTIVE,CREATETIME,UPDATETIME FROM  user WHERE USERNAME = ?`
+	fmt.Println(sqlStr)
 	var row = mysql.DB.QueryRow(sqlStr, username)
 	//err := row.Scan(u.ID, u.USERID, u.USERNAME, u.NICKNAME, u.ROLE, u.PASSWD, u.UPDATETIME, u.EXPIRES, u.INACTIVE, u.CREATETIME)
 	err := row.Scan(&u.ID, &u.USERID, &u.USERNAME, &u.NICKNAME, &u.ROLE, &u.PASSWD, &u.EXPIRES, &u.INACTIVE, &u.CREATETIME, &u.UPDATETIME)
@@ -72,4 +73,17 @@ func SelectUserQueryMultiRow(id int) {
 		fmt.Printf("u:%#v\n", u)
 	}
 
+}
+
+// 查询单条
+func SelectUidUserQueryRow(uid string) (*UserInfo, error) {
+	var u UserInfo
+	sqlStr := `SELECT ID,USERID,USERNAME,NICKNAME,ROLE,PASSWD,EXPIRES,INACTIVE,CREATETIME,UPDATETIME FROM  user WHERE USERID = ?`
+	var row = mysql.DB.QueryRow(sqlStr, uid)
+	err := row.Scan(&u.ID, &u.USERID, &u.USERNAME, &u.NICKNAME, &u.ROLE, &u.PASSWD, &u.EXPIRES, &u.INACTIVE, &u.CREATETIME, &u.UPDATETIME)
+	if err != nil {
+		fmt.Println("asd", err.Error())
+
+	}
+	return &u, err
 }

@@ -3,6 +3,7 @@ package routers
 import (
 	"github.com/gin-gonic/gin"
 	"mana/src/controllers/user"
+	"mana/src/filters/util"
 	"net/http"
 )
 
@@ -10,16 +11,24 @@ import (
 func Index(r *gin.Engine) {
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
+			"code":    "200",
+			"message": "successfully",
 		})
 	})
 
-	//Linux服务路由
+	// 用户登录
+	r.POST("/api/v1/common/login", user.Login)
+	// 用户注册
+	r.POST("/api/v1/common/register", user.InstUser)
+
+	// 验证请求token中间件
+	r.Use(util.AuthToken())
+
+	// Linux服务路由
 	v1Group := r.Group("/api/v1")
 	{
-		// 用户注册
-		v1Group.POST("/common/register", user.InstUser)
-		v1Group.POST("/common/login", user.Login)
+
+		v1Group.GET("/common/usercenter", user.FindByUserinfo)
 		//获取服务器性能列表
 		//v1Group.GET("/common/resource/monitor", linuxServe.LinuxGetMethod)
 
