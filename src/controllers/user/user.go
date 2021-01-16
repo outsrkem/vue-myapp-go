@@ -64,11 +64,9 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(username)
-	fmt.Println(loginPassword)
 	result, _ := models.SelectUserQueryRow(username)
+	fmt.Println("登录用户",username)
 	// 校验密码
-	fmt.Println(result.PASSWD)
 	err := utility.PasswordAuthentication(loginPassword, result.PASSWD)
 	if err != nil {
 		fmt.Println("登录错误", err)
