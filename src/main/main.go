@@ -12,12 +12,15 @@ func main() {
 	// 加载日志
 	log := config.Log()
 
-	// 加载配置
-	cfg, err := config.ParseConfig("../config/config.json")
-	if err != nil {
-		log.Error("配置文件读取错误")
-		panic(err.Error())
-	}
+	// 加载配置文件
+	//cfg, err := config.ParseConfig("../config/config.json")
+	//if err != nil {
+	//	log.Error("配置文件读取错误")
+	//	panic(err.Error())
+	//}
+
+	// 加载默认配置
+	cfg := config.ParseConfig()
 
 	// 连接数据库MySql
 	mysql.InitDB(cfg)
