@@ -14,12 +14,12 @@ func InitDB(cfg *config.Config) (err error) {
 		cfg.DbUser, cfg.DbPassword, cfg.DbNetwork, cfg.DbServer, cfg.DbPort, cfg.DbName)
 	DB, err = sql.Open("mysql", dsn)
 	if err != nil {
-		fmt.Println("数据库配置错误", err)
+		config.Log().Error("数据库配置错误,", err)
 		panic(err)
 	}
 	err = DB.Ping()
 	if err != nil {
-		fmt.Println("数据库连接失败", err)
+		config.Log().Error("数据库连接失败,", err)
 		panic(err)
 	}
 	// 配置连接池最大连接数

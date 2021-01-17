@@ -81,7 +81,7 @@ func InstUser(name string, passwd string) (string, error) {
 func SelectUserQueryRow(username string) (*userInfo, error) {
 	var u userInfo
 	sqlStr := `SELECT ID,USERID,USERNAME,NICKNAME,ROLE,PASSWD,EXPIRES,INACTIVE,CREATETIME,UPDATETIME FROM  user WHERE USERNAME = ?`
-	fmt.Println(sqlStr)
+	//fmt.Println(sqlStr)
 	var row = mysql.DB.QueryRow(sqlStr, username)
 	//err := row.Scan(u.ID, u.USERID, u.USERNAME, u.NICKNAME, u.ROLE, u.PASSWD, u.UPDATETIME, u.EXPIRES, u.INACTIVE, u.CREATETIME)
 	err := row.Scan(&u.ID, &u.USERID, &u.USERNAME, &u.NICKNAME, &u.ROLE, &u.PASSWD, &u.EXPIRES, &u.INACTIVE, &u.CREATETIME, &u.UPDATETIME)

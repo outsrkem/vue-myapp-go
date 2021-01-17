@@ -3,6 +3,7 @@ package user
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"mana/src/config"
 	"mana/src/filters/util"
 	"mana/src/models/impl"
 	"mana/src/models/users"
@@ -76,7 +77,7 @@ func Login(c *gin.Context) {
 	}
 
 	result, _ := users.SelectUserQueryRow(username)
-	fmt.Println("登录用户", username)
+	config.Log().Error("登录用户===> ", username)
 	// 校验密码
 	err := util.PasswordAuthentication(loginPassword, result.PASSWD)
 	if err != nil {

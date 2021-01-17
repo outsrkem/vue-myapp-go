@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"mana/src/config"
@@ -10,11 +9,16 @@ import (
 )
 
 func main() {
+	// 加载日志
+	log := config.Log()
 
+	// 加载配置
 	cfg, err := config.ParseConfig("../config/config.json")
 	if err != nil {
+		log.Error("配置文件读取错误")
 		panic(err.Error())
 	}
+
 	// 连接数据库MySql
 	mysql.InitDB(cfg)
 
@@ -28,7 +32,6 @@ func main() {
 	// 服务运行
 	err1 := r.Run(cfg.Listen + ":" + cfg.Port)
 	if err1 != nil {
-		fmt.Println("服务运行错误")
+		log.Error("服务运行错误")
 	}
-
 }
