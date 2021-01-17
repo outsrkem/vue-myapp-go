@@ -1,4 +1,4 @@
-package impl
+package models
 
 type GeneralErrorStruct struct {
 	Code string `json:"code"`

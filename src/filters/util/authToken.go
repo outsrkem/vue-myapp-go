@@ -3,7 +3,7 @@ package util
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"mana/src/models/impl"
+	"mana/src/models"
 	"net/http"
 	"time"
 )
@@ -14,7 +14,7 @@ func AuthToken() gin.HandlerFunc {
 		// 通过http header中的token解析来认证
 		token := c.Request.Header.Get("X-Auth-Token")
 		if token == "" {
-			var metaInfo impl.GeneralErrorStruct
+			var metaInfo models.GeneralErrorStruct
 			fmt.Println("请求头中未携带token,403")
 			metaInfo.Code = "403"
 			metaInfo.Msg = "The token X-Auth-Token is not carried in the request header"
@@ -26,7 +26,7 @@ func AuthToken() gin.HandlerFunc {
 
 		claims, err := ParseToken(token)
 		if err != nil {
-			var metaInfo impl.GeneralErrorStruct
+			var metaInfo models.GeneralErrorStruct
 			fmt.Println("token格式无效或已过期,401")
 			metaInfo.Code = "401"
 			metaInfo.Msg = "The token format is invalid or expired"

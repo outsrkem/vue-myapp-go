@@ -1,29 +1,30 @@
 package user
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"mana/src/config"
 	"mana/src/filters/util"
-	"mana/src/models/impl"
-	"mana/src/models/users"
+	"mana/src/models"
 	"net/http"
 	"time"
 )
 
+// 日志
+var _log = config.Log()
+
 // 用户注册
 func InstUser(c *gin.Context) {
-	var userRegisterInfo impl.UserRegisterInfo
+	var userRegisterInfo models.UserRegisterInfo
 
 	if err := c.BindJSON(&userRegisterInfo); err != nil {
-		fmt.Println("用户注册获取数据error", err)
+		_log.Error("用户注册获取数据error", err)
 	}
 	password := userRegisterInfo.Password
 	username := userRegisterInfo.Username
 	// 用户名或密码不能为空
 	if password == "" || username == "" {
-		fmt.Println("注册错误,用户名或密码为空")
-		var metaInfo impl.GeneralErrorStruct
+		_log.Error("注册错误,用户名或密码为空")
+		var metaInfo models.GeneralErrorStruct
 		metaInfo.Code = "2014"
 		metaInfo.Msg = "The user name or password cannot be empty"
 		metaInfo.RequestTime = time.Now().UnixNano()
@@ -33,11 +34,11 @@ func InstUser(c *gin.Context) {
 	// 加密密码
 	encodePassword, _ := util.PasswordBcrypt(password)
 	// 把用户信息插入到数据库
-	userId, err := users.InstUser(username, encodePassword)
+	userId, err := models.InstUser(username, encodePassword)
 	if err != nil {
 		// 插入失败
-		fmt.Println("把用户信息插入到数据库失败")
-		var metaInfo impl.GeneralErrorStruct
+		_log.Error("把用户信息插入到数据库失败")
+		var metaInfo models.GeneralErrorStruct
 		metaInfo.Code = "500"
 		metaInfo.Msg = "internal error"
 		metaInfo.RequestTime = time.Now().UnixNano()
@@ -45,7 +46,7 @@ func InstUser(c *gin.Context) {
 		return
 	}
 
-	var user impl.UserRegisterStruct
+	var user models.UserRegisterStruct
 	meta := &user.MetaInfo
 	resp := &user.Response
 
@@ -59,16 +60,16 @@ func InstUser(c *gin.Context) {
 
 // 用户登录
 func Login(c *gin.Context) {
-	var userLoginInfo impl.UserLoginInfo
+	var userLoginInfo models.UserLoginInfo
 	if err := c.BindJSON(&userLoginInfo); err != nil {
-		fmt.Println("用户登录获取数据error", err)
+		_log.Error("用户登录获取数据error", err)
 	}
 	username := userLoginInfo.Username
 	loginPassword := userLoginInfo.Password
 	// 用户名或密码不能为空
 	if loginPassword == "" || username == "" {
-		fmt.Println("登录错误,用户名或密码为空")
-		var metaInfo impl.GeneralErrorStruct
+		_log.Error("登录错误,用户名或密码为空")
+		var metaInfo models.GeneralErrorStruct
 		metaInfo.Code = "2014"
 		metaInfo.Msg = "The user name or password cannot be empty"
 		metaInfo.RequestTime = time.Now().UnixNano()
@@ -76,19 +77,19 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	result, _ := users.SelectUserQueryRow(username)
-	config.Log().Error("登录用户===> ", username)
+	result, _ := models.SelectUserQueryRow(username)
+	_log.Info("登录用户===> ", username)
 	// 校验密码
 	err := util.PasswordAuthentication(loginPassword, result.PASSWD)
 	if err != nil {
-		fmt.Println("登录错误", err)
-		var user impl.MetaInfo
+		_log.Error("登录错误", err)
+		var user models.MetaInfo
 		user.RequestTime = time.Now().UnixNano()
 		user.Msg = "Logon failed"
 		user.Code = "1"
 		c.JSON(http.StatusUnauthorized, &user)
 	} else {
-		var user impl.UserLoginStruct
+		var user models.UserLoginStruct
 		meta := &user.MetaInfo
 		resp := &user.Response
 
@@ -117,16 +118,16 @@ func FindByUserinfo(c *gin.Context) {
 	// 若有高权限的token，则可以查询其他用户，则此处需要传递用户id，后面优化
 	//uid := c.MustGet("uid").(string)
 	uid := c.Param("uid") // 获取路径参数
-	result, err := users.SelectUidUserQueryRow(uid)
+	result, err := models.SelectUidUserQueryRow(uid)
 	if err != nil {
-		fmt.Println("用户信息查询异常", err)
-		var user impl.MetaInfo
+		_log.Error("用户信息查询异常", err)
+		var user models.MetaInfo
 		user.RequestTime = time.Now().UnixNano()
 		user.Msg = "Logon failed"
 		user.Code = "1"
 		c.JSON(http.StatusUnauthorized, &user)
 	} else {
-		var user impl.UserLoginStruct
+		var user models.UserLoginStruct
 		meta := &user.MetaInfo
 		resp := &user.Response
 

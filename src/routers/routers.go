@@ -29,13 +29,8 @@ func Index(r *gin.Engine) {
 	{
 
 		v1Group.GET("/common/user/userinfo/:uid", user.FindByUserinfo)
-		//获取服务器性能列表
-		//v1Group.GET("/common/resource/monitor", linuxServe.LinuxGetMethod)
 
-		//服务器列表添加
-		//v1Group.POST("/monitor", middle.Admin, method.LinuxPostMethod)
-		//
-		////删除服务器列表数据
-		//v1Group.DELETE("/monitor", middle.Admin, method.LinuxDeleteMethod)
+		// 添加k8s配置文件
+		//v1Group.POST("/cluster", method.K8sPostMethod)
 	}
 }

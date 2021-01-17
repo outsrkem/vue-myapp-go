@@ -1,4 +1,4 @@
-package impl
+package models
 
 // 注册用户的body结构
 type UserRegisterInfo struct {

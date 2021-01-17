@@ -1,4 +1,4 @@
-package impl
+package models
 
 type UserLoginStruct struct {
 	MetaInfo MetaInfo `json:"metaInfo"`
