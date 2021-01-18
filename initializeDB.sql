@@ -55,3 +55,22 @@ CREATE TABLE user_center (
   CONSTRAINT user_center_ibfk_1 FOREIGN KEY (USERID) REFERENCES user (USERID),
   CONSTRAINT user_center_ibfk_2 FOREIGN KEY (USERNAME) REFERENCES user (USERNAME)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户中心表';
+
+-- ----------------------------
+-- Table structure for kube_config
+-- ----------------------------
+-- DROP TABLE IF EXISTS kube_config;
+CREATE TABLE kube_config (
+  ID int(255) NOT NULL AUTO_INCREMENT,
+  USERID varchar(255) NOT NULL COMMENT '用户id',
+  CLUSTER_ALIAS varchar(255) NOT NULL COMMENT '集群别名',
+  CLUSTER_USER varchar(255) NOT NULL COMMENT '集群权限用户',
+  CURRENT_CONTEXT varchar(255) NOT NULL COMMENT '上下文',
+  SERVER varchar(255) NOT NULL COMMENT '集群地址',
+  CREATION_TIME datetime DEFAULT NULL COMMENT '创建时间',
+  STATUS int(11) NOT NULL COMMENT '配置文件配置状态',
+  CERTIFICATE_AUTHORITY_DATA text NOT NULL COMMENT 'CA证书',
+  CLIENT_CERTIFICATE_DATA text NOT NULL COMMENT '用户证书',
+  CLIENT_KEY_DATA text NOT NULL COMMENT '用户证书私钥',
+  PRIMARY KEY (ID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='集群配置表';

@@ -123,7 +123,7 @@ func FindByUserinfo(c *gin.Context) {
 		_log.Error("用户信息查询异常", err)
 		var user models.MetaInfo
 		user.RequestTime = time.Now().UnixNano()
-		user.Msg = "Logon failed"
+		user.Msg = "Query exception"
 		user.Code = "1"
 		c.JSON(http.StatusUnauthorized, &user)
 	} else {

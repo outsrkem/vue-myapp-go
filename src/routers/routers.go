@@ -2,6 +2,7 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
+	"mana/src/controllers/kubernetes"
 	"mana/src/controllers/user"
 	"mana/src/filters/util"
 	"net/http"
@@ -31,6 +32,7 @@ func Index(r *gin.Engine) {
 		v1Group.GET("/common/user/userinfo/:uid", user.FindByUserinfo)
 
 		// 添加k8s配置文件
-		//v1Group.POST("/cluster", method.K8sPostMethod)
+		v1Group.POST("/common/kubernetes/cluster", kubernetes.InstKubeConfig)
+
 	}
 }
