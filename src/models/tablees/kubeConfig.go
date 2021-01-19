@@ -14,7 +14,6 @@ type kubeConfig struct {
 	CLIENT_KEY_DATA            string `json:"client_key_data"`            // 用户证书私钥
 }
 
-
 type KubeConfig interface {
 	NewKubeConfig()
 }
