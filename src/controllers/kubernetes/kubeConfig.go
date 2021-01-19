@@ -19,7 +19,7 @@ func InstKubeConfig(c *gin.Context) {
 	uid := c.MustGet("uid").(string)
 
 	k8sConf := make(map[string]interface{})
-	c.BindJSON(&k8sConf)
+	c.ShouldBind(&k8sConf)
 
 	// 序列化
 	data, err := json.Marshal(k8sConf)
@@ -38,6 +38,13 @@ func InstKubeConfig(c *gin.Context) {
 	k.CERTIFICATE_AUTHORITY_DATA = gjson.Get(string(data), "clusters.0.cluster.certificate-authority-data").String()
 	k.CLIENT_CERTIFICATE_DATA = gjson.Get(string(data), "users.0.user.client-certificate-data").String()
 	k.CLIENT_KEY_DATA = gjson.Get(string(data), "users.0.user.client-key-data").String()
+
+	if k.CLUSTER_USER == "" || k.CURRENT_CONTEXT == "" || k.SERVER == "" ||
+		k.CERTIFICATE_AUTHORITY_DATA == "" || k.CLIENT_CERTIFICATE_DATA == "" || k.CLIENT_KEY_DATA == "" {
+		msg := models.NewResMessage("406", "Missing configuration data")
+		c.JSON(http.StatusNotAcceptable, &msg)
+		return
+	}
 
 	models.InstKubeConfig(k)
 
