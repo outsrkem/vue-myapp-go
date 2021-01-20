@@ -6,27 +6,25 @@ import (
 	"menu/db"
 )
 
-func (u *UserTable) UserGet(username string) {
-
-	//获取数据库数据
-	data := db.Get([]byte(username), db.UserTable)
+/*
+	前缀查询逻辑
+*/
+func (u *UserTable) UserGet(username string) *[]UserTable {
+	data := db.PrefixGet(db.UserTable, username)
 	if data == nil {
-		u.Status = "UserGet获取数据库错误"
-		return
+		fmt.Println("前缀查询错误")
+		return nil
 	}
 
-	//反序列化数据
-	var user UserTable
-	err := json.Unmarshal(data.Value, &user)
-	if err != nil {
-		fmt.Println(err)
-		return
+	userList := make([]UserTable, 0, 5)
+	for i, entry := range data {
+		err := json.Unmarshal(entry.Value, &u)
+		if err != nil {
+			fmt.Println(err)
+			return nil
+		}
+		u.Id = i + 1
+		userList = append(userList, *u)
 	}
-
-	u.UserName = user.UserName
-	u.Password = user.Password
-	u.Role = user.Role
-	u.Status = user.Status
-	u.CreatTime = user.CreatTime
-	u.UpdateTime = user.UpdateTime
+	return &userList
 }

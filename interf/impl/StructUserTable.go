@@ -7,6 +7,6 @@ type UserTable struct {
 	CreatTime  int64  `json:"creat_time"`
 	UpdateTime int64  `json:"update_time"`
 	Role       string `json:"role"`
-	Status     string `json:"status"`
+	UserStatus bool   `json:"user_status"`
 	Token      string `json:"token"`
 }

@@ -19,7 +19,7 @@ var (
 
 //初始化函数，用于命令行接收端口、账号等信息
 func init() {
-	flag.IntVar(&port, "port", 8080, "set server port")
+	flag.IntVar(&port, "port", 8081, "set server port")
 	flag.StringVar(&adminUser, "user", "admin", "set admin username")
 	flag.StringVar(&adminPassword, "pwd", "admin", "set admin password")
 	flag.BoolVar(&onOff, "n", false, "true/false on backup")

@@ -23,6 +23,7 @@ func (u *UserTable) UserLogin() string {
 
 	if u.Password == user.Password {
 		u.Password = ""
+		u.UserStatus = user.UserStatus
 		token := middle.Token(user.UserName, user.Role)
 		u.Token = token
 	} else {

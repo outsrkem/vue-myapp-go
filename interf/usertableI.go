@@ -8,7 +8,9 @@ import "menu/interf/impl"
 type UserTableI interface {
 	UserAdd()
 	UserDel(username string)
-	UserGet(username string)
 	UserGetAll() *[]impl.UserTable
 	UserLogin() string
+	UserGet(username string) *[]impl.UserTable
+	UserPageGet(pagesize, pagenum string) (*[]impl.UserTable, int, int)
+	//UserPageNumGet(pagesize,pagenum string) *[]impl.UserTable
 }

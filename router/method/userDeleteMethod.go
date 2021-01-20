@@ -20,7 +20,9 @@ func UserDeleteMethod(c *gin.Context) {
 		face = &data
 		face.UserDel(username)
 
-		c.JSON(http.StatusOK, data)
+		c.JSON(http.StatusOK, gin.H{
+			"status": 200,
+		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"status": "用户名不能为空",

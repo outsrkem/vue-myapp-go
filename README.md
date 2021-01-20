@@ -103,9 +103,20 @@ Usage of menu.exe:
 
 
 
-- **添加用户：**/api/v1/common/user/table?username=huang&password=123123&role=general&status=0
+- **分页查询：**/api/v1/common/user/table?pagesize=分页数&pagenum=1
+  - GET请求：需要`admin`或`general`权限
+  - 请求参数：pagesize为需要分页数，pagenum为当前页数，值为1时，代表只返回分页数据，如果值大于1，返回该页数据
+
+
+
+- **搜索查询：**/api/v1/common/user/table?username=用户名前缀
+  - GET请求：需要`admin`或`general`权限
+
+
+
+- **添加用户：**/api/v1/common/user/table?username=huang&password=123123&role=general&user_status=0
   - POST请求：需要`admin`权限
-  - 请求参数：role用户权限，分为admin和general，status为用户状态，暂时没有
+  - 请求参数：role用户权限，分为admin和general，user_status为用户状态，值为bool
 
 
 

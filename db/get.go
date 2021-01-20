@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"github.com/xujiajun/nutsdb"
 	"log"
 )
@@ -21,7 +20,7 @@ func Get(key []byte, bucket string) *nutsdb.Entry {
 		func(tx *nutsdb.Tx) error {
 			e, err := tx.Get(bucket, key)
 			if err != nil {
-				fmt.Println(err)
+				//fmt.Println(err)
 				return err
 			}
 			list = e

@@ -2,6 +2,7 @@ package method
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/cast"
 	"menu/interf"
 	"menu/interf/impl"
 	"net/http"
@@ -15,23 +16,23 @@ func UserPostMethod(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 	role := c.Query("role")
-	status := c.Query("status")
+	userstatus := c.Query("user_status")
 
-	if username != "" && password != "" && role != "" && status != "" {
+	if username != "" && password != "" && role != "" && userstatus != "" {
 		//创建接口和结构体对象
 		var face interf.UserTableI
 		data := impl.UserTable{
-			UserName: username,
-			Password: password,
-			Role:     role,
-			Status:   status,
+			UserName:   username,
+			Password:   password,
+			Role:       role,
+			UserStatus: cast.ToBool(userstatus),
 		}
 		//调用接口add方法
 		face = &data
 		face.UserAdd()
 
 		c.JSON(http.StatusOK, gin.H{
-			"status": "用户添加成功",
+			"status": 200,
 		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{

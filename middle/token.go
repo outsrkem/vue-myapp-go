@@ -17,7 +17,7 @@ type CustomClaims struct {
 
 func Token(username, role string) string {
 	//生成token
-	maxAge := 60 * 30 //过期时间
+	maxAge := 60 * 60 //过期时间
 	customClaims := &CustomClaims{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Duration(maxAge) * time.Second).Unix(), // 过期时间，必须设置

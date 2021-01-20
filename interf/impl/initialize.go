@@ -15,7 +15,7 @@ func Initialize(adminUser, adminPassword string) {
 	admin := UserTable{
 		UserName:   adminUser,
 		Password:   adminPassword,
-		Status:     "0",
+		UserStatus: true,
 		Role:       "admin",
 		CreatTime:  time.Now().Unix(),
 		UpdateTime: time.Now().Unix(),
