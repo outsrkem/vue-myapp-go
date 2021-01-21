@@ -6,7 +6,7 @@ type UserRegisterInfo struct {
 	Password string `json:"password"`
 }
 
-
+// 用户注册返回体结构
 type UserRegisterStruct struct {
 	MetaInfo metaInfo `json:"metaInfo"`
 	Response response `json:"response"`

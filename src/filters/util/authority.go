@@ -18,7 +18,7 @@ type CustomClaims struct {
 // 生成token
 func EncodeAuthToken(uid string, username string, role string) string {
 	//生成token
-	maxAge := 60 * 30 //过期时间(秒)
+	maxAge := 60 * 60 * 24 //过期时间(秒)
 	customClaims := &CustomClaims{
 		StandardClaims: jwt.StandardClaims{
 			Id:        uid,                                                        // 用户id

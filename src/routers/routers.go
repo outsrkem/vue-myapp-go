@@ -25,7 +25,7 @@ func Index(r *gin.Engine) {
 	// 验证请求token中间件
 	r.Use(util.AuthToken())
 
-	// Linux服务路由
+	// 路由
 	v1Group := r.Group("/api/v1")
 	{
 
@@ -33,6 +33,9 @@ func Index(r *gin.Engine) {
 
 		// 添加k8s配置文件
 		v1Group.POST("/common/kubernetes/cluster", kubernetes.InstKubeConfig)
+
+		// 获取集群配置列表
+		v1Group.GET("/common/kubernetes/cluster", kubernetes.GetKubeConfig)
 
 	}
 }

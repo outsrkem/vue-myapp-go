@@ -7,6 +7,7 @@ import (
 	"mana/src/config"
 	"mana/src/models"
 	"net/http"
+	"strconv"
 )
 
 var log = config.Log()
@@ -49,5 +50,22 @@ func InstKubeConfig(c *gin.Context) {
 	models.InstKubeConfig(k)
 
 	msg := models.NewResMessage("201", "Creating KubeConfig a successful")
-	c.JSON(http.StatusOK, &msg)
+	c.JSON(http.StatusCreated, &msg)
+}
+
+func GetKubeConfig(c *gin.Context) {
+	var k = models.NewKubeConfig()
+
+	// 获取Query参数，转换为int类型
+	pageSize, _ := strconv.Atoi(c.Query("page_size"))
+	page, _ := strconv.Atoi(c.Query("page"))
+
+	// 获取uid，(token 中获取)
+	uid := c.MustGet("uid").(string)
+
+	// 返回map 数据，指针
+	aa := models.FindByKubeConfigs(k, uid, pageSize, page)
+	//fmt.Println("+++++++", k.ID)
+	//msg := models.NewResMessage("200", "successful")
+	c.JSON(http.StatusOK, &aa)
 }
