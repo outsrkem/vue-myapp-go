@@ -8,6 +8,7 @@ import (
 	"mana/src/models"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 var log = config.Log()
@@ -53,19 +54,28 @@ func InstKubeConfig(c *gin.Context) {
 	c.JSON(http.StatusCreated, &msg)
 }
 
+// 返回集群配置文件信息
 func GetKubeConfig(c *gin.Context) {
-	var k = models.NewKubeConfig()
 
 	// 获取Query参数，转换为int类型
 	pageSize, _ := strconv.Atoi(c.Query("page_size"))
 	page, _ := strconv.Atoi(c.Query("page"))
+	if pageSize == 0 {
+		pageSize = 10
+	}
+	if page == 0 {
+		page = 1
+	}
+
+	log.Error(pageSize)
+	log.Error(page)
 
 	// 获取uid，(token 中获取)
 	uid := c.MustGet("uid").(string)
 
-	// 返回map 数据，指针
-	aa := models.FindByKubeConfigs(k, uid, pageSize, page)
-	//fmt.Println("+++++++", k.ID)
-	//msg := models.NewResMessage("200", "successful")
-	c.JSON(http.StatusOK, &aa)
+	k8sJson := models.FindByKubeConfigs(uid, pageSize, page)
+	k8sJson.MetaInfo.Status = "200"
+	k8sJson.MetaInfo.Msg = "successfully"
+	k8sJson.MetaInfo.RequestTime = time.Now().UnixNano()
+	c.JSON(http.StatusOK, k8sJson)
 }

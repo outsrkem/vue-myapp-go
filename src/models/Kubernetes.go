@@ -1,39 +1,28 @@
 package models
 
-//定义接收k8s配置文件序列化为结构体
-type K8sBodyList struct {
-	APIVersion     string      `json:"apiVersion"`
-	Clusters       []Clusters  `json:"clusters"`
-	Contexts       []Contexts  `json:"contexts"`
-	CurrentContext string      `json:"current-context"`
-	Kind           string      `json:"kind"`
-	Preferences    Preferences `json:"preferences"`
-	Users          []Users     `json:"users"`
+// 定义返回k8s集群配置的结构体
+// test
+type kubeConfigStruct struct {
+	MetaInfo metaInfos `json:"metaInfo"`
+	Response resPonses `json:"response"`
+}
+type metaInfos struct {
+	Msg         string `json:"msg"`
+	RequestTime int64  `json:"requestTime"`
+	Status      string `json:"status"`
 }
 
-type Cluster struct {
-	CertificateAuthorityData string `json:"certificate-authority-data"`
-	Server                   string `json:"server"`
+type pageInfos struct {
+	Page     string `json:"page"`
+	PageNum  string `json:"pageNum"`
+	PageSize string `json:"pageSize"`
+	Total    string `json:"total"`
 }
-type Clusters struct {
-	Cluster Cluster `json:"cluster"`
-	Name    string  `json:"name"`
+type resPonses struct {
+	Items    interface{} `json:"items"`
+	PageInfo pageInfos   `json:"pageInfo"`
 }
-type Context struct {
-	Cluster string `json:"cluster"`
-	User    string `json:"user"`
-}
-type Contexts struct {
-	Context Context `json:"context"`
-	Name    string  `json:"name"`
-}
-type Preferences struct {
-}
-type User struct {
-	ClientCertificateData string `json:"client-certificate-data"`
-	ClientKeyData         string `json:"client-key-data"`
-}
-type Users struct {
-	Name string `json:"name"`
-	User User   `json:"user"`
+func NewKubeConfigStruct() *kubeConfigStruct {
+	return &kubeConfigStruct{
+	}
 }
