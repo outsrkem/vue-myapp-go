@@ -12,9 +12,16 @@ import (
 // 日志
 var _log = config.Log()
 
+// 注册用户的body结构
+type userRegisterInfo struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 // 用户注册
 func InstUser(c *gin.Context) {
-	var userRegisterInfo models.UserRegisterInfo
+
+	var userRegisterInfo userRegisterInfo
 
 	if err := c.BindJSON(&userRegisterInfo); err != nil {
 		_log.Error("用户注册获取数据error", err)
@@ -24,38 +31,25 @@ func InstUser(c *gin.Context) {
 	// 用户名或密码不能为空
 	if password == "" || username == "" {
 		_log.Error("注册错误,用户名或密码为空")
-		var metaInfo models.GeneralErrorStruct
-		metaInfo.Code = "2014"
-		metaInfo.Msg = "The user name or password cannot be empty"
-		metaInfo.RequestTime = time.Now().UnixNano()
-		c.JSON(http.StatusForbidden, &metaInfo)
+		msg := models.NewResMessage("403", "The user name or password cannot be empty")
+		c.JSON(http.StatusForbidden, msg)
 		return
 	}
 	// 加密密码
 	encodePassword, _ := util.PasswordBcrypt(password)
 	// 把用户信息插入到数据库
-	userId, err := models.InstUser(username, encodePassword)
+	userInfo, err := models.InstUser(username, encodePassword)
 	if err != nil {
 		// 插入失败
 		_log.Error("把用户信息插入到数据库失败")
-		var metaInfo models.GeneralErrorStruct
-		metaInfo.Code = "500"
-		metaInfo.Msg = "internal error"
-		metaInfo.RequestTime = time.Now().UnixNano()
-		c.JSON(http.StatusInternalServerError, &metaInfo)
+		msg := models.NewResMessage("500", "internal error")
+		c.JSON(http.StatusInternalServerError, msg)
 		return
 	}
 
-	var user models.UserRegisterStruct
-	meta := &user.MetaInfo
-	resp := &user.Response
-
-	(*meta).RequestTime = time.Now().UnixNano()
-	(*meta).Msg = "registered successfully"
-	(*meta).Code = "201"
-	resp.Userid = userId
-	resp.Username = username
-	c.JSON(http.StatusCreated, &user)
+	msg := models.NewResMessage("201", "registered successfully")
+	returns := models.NewReturns(userInfo, msg)
+	c.JSON(http.StatusCreated, returns)
 }
 
 // 用户登录

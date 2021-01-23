@@ -35,7 +35,8 @@ type userCenter struct {
 }
 
 // 注册用户
-func InstUser(name string, passwd string) (string, error) {
+func InstUser(name string, passwd string) (map[string]string, error) {
+	userInfo := make(map[string]string)
 	atTimes := time.Now().Unix()
 	atTimesStr := time.Unix(atTimes, 0).Format("2006-01-02 15:04:05")
 	uid := time.Now().UnixNano()
@@ -47,7 +48,7 @@ func InstUser(name string, passwd string) (string, error) {
 			tx.Rollback() // 回滚
 		}
 		fmt.Printf("事务开启失败:%v\n", err)
-		return "", err
+		return userInfo, err
 	}
 	// 插入用户表信息
 	sqlStr1 := `INSERT INTO user (USERID, USERNAME, NICKNAME, ROLE, PASSWD, UPDATETIME, EXPIRES, INACTIVE, CREATETIME) VALUES (?,?,?,?,?,?,?,?,?);`
@@ -55,7 +56,7 @@ func InstUser(name string, passwd string) (string, error) {
 	if err != nil {
 		tx.Rollback() // 回滚
 		fmt.Printf("用户表插入失败:%v\n", err)
-		return "", err
+		return userInfo, err
 	}
 	// 插入用户中心表信息
 	sqlStr2 := `INSERT INTO user_center (USERID, USERNAME, NICKNAME, CREATETIME, UPDATETIME) VALUES (?,?,?,?,?);`
@@ -63,18 +64,20 @@ func InstUser(name string, passwd string) (string, error) {
 	if err != nil {
 		tx.Rollback() // 回滚
 		fmt.Printf("用户中心表插入失败:%v\n", err)
-		return "", err
+		return userInfo, err
 	}
 	// 提交事务
 	if err = tx.Commit(); err != nil {
 		// 事务回滚
 		tx.Rollback()
 		fmt.Println("事务回滚...")
-		return "", err
+		return userInfo, err
 	}
 
-	// 转换为string类型
-	return strconv.FormatInt(uid, 10), err
+	userInfo["userid"] = strconv.FormatInt(uid, 10) // 转换为string类型
+	userInfo["username"] = name
+
+	return userInfo, err
 }
 
 // 查询单条
