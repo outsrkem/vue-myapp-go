@@ -58,14 +58,8 @@ func InstKubeConfig(c *gin.Context) {
 func GetKubeConfig(c *gin.Context) {
 
 	// 获取Query参数，转换为int类型
-	pageSize, _ := strconv.Atoi(c.Query("page_size"))
-	page, _ := strconv.Atoi(c.Query("page"))
-	if pageSize == 0 {
-		pageSize = 10
-	}
-	if page == 0 {
-		page = 1
-	}
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 
 	// 获取uid，(token 中获取)
 	uid := c.MustGet("uid").(string)
