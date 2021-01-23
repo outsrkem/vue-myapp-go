@@ -37,5 +37,8 @@ func Index(r *gin.Engine) {
 		// 获取集群配置列表
 		v1Group.GET("/common/kubernetes/cluster", kubernetes.GetKubeConfig)
 
+		// 删除集群配置
+		v1Group.DELETE("/common/kubernetes/cluster", kubernetes.DelKubeConfig)
+
 	}
 }

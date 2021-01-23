@@ -67,9 +67,6 @@ func GetKubeConfig(c *gin.Context) {
 		page = 1
 	}
 
-	log.Error(pageSize)
-	log.Error(page)
-
 	// 获取uid，(token 中获取)
 	uid := c.MustGet("uid").(string)
 
@@ -78,4 +75,12 @@ func GetKubeConfig(c *gin.Context) {
 	k8sJson.MetaInfo.Msg = "successfully"
 	k8sJson.MetaInfo.RequestTime = time.Now().UnixNano()
 	c.JSON(http.StatusOK, k8sJson)
+}
+
+// 删除集群配置
+func DelKubeConfig(c *gin.Context) {
+	configId, _ := strconv.Atoi(c.Query("config_id"))
+	log.Info(configId)
+	msg := models.NewResMessage("200", "Delete successful")
+	c.JSON(http.StatusOK, msg)
 }

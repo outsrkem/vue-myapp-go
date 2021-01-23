@@ -13,10 +13,10 @@ type metaInfos struct {
 }
 
 type pageInfos struct {
-	Page     string `json:"page"`
-	PageNum  string `json:"pageNum"`
-	PageSize string `json:"pageSize"`
-	Total    string `json:"total"`
+	Page     int `json:"page"`
+	PageNum  int `json:"pageNum"`
+	PageSize int `json:"pageSize"`
+	Total    int `json:"total"`
 }
 type resPonses struct {
 	Items    interface{} `json:"items"`

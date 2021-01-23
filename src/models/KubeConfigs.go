@@ -102,12 +102,13 @@ func FindByKubeConfigs(uid string, pageSize int, page int) *kubeConfigStruct {
 		item["clusterName"] = k.CLUSTER_ALIAS
 		item["userName"] = k.CLUSTER_USER
 		item["server"] = k.SERVER
-		item["currentContext"] = k.CREATION_TIME
+		item["currentContext"] = k.CURRENT_CONTEXT
 		item["status"] = k.STATUS
 		items = append(items, item)
 	}
 	// 查询记录总数,用于PageInfo信息
-	total, pageNum := 0, 0
+	var total int
+	var pageNum int
 	// 查询总条数
 	totalRow, err := mysql.DB.Query("SELECT COUNT(*) FROM kube_config WHERE USERID = ?", uid)
 	if err != nil {
@@ -132,11 +133,12 @@ func FindByKubeConfigs(uid string, pageSize int, page int) *kubeConfigStruct {
 		pageNum = total/pageSize + 1
 	}
 
+	// 页码相关信息
 	k8sJson.Response.Items = items
-	k8sJson.Response.PageInfo.Page = strconv.Itoa(page)
-	k8sJson.Response.PageInfo.PageSize = strconv.Itoa(pageSize)
-	k8sJson.Response.PageInfo.Total = strconv.Itoa(total)
-	k8sJson.Response.PageInfo.PageNum = strconv.Itoa(pageNum)
+	k8sJson.Response.PageInfo.Page = page
+	k8sJson.Response.PageInfo.PageSize = pageSize
+	k8sJson.Response.PageInfo.Total = total
+	k8sJson.Response.PageInfo.PageNum = pageNum
 
 	return k8sJson
 }
