@@ -84,3 +84,16 @@ func DelKubeConfig(c *gin.Context) {
 	msg := models.NewResMessage("200", "Delete successful")
 	c.JSON(http.StatusOK, msg)
 }
+
+// 获取工作负载
+
+func GetWorkingLoad(c *gin.Context) {
+	cid := c.Param("cid")               // 获取路径参数
+	namespaces := c.Param("namespaces") // 获取路径参数
+	control := c.Param("control")       // 获取路径参数
+	log.Info(cid)
+	log.Info(namespaces)
+	log.Info(control)
+	msg := models.NewResMessage("200", "Successful")
+	c.JSON(http.StatusOK, msg)
+}
