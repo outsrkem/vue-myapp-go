@@ -30,6 +30,7 @@ func Index(r *gin.Engine) {
 	{
 
 		v1Group.GET("/common/user/userinfo/:uid", user.FindByUserinfo)
+		//v1Group.GET("/common/user/userinfo/:uid/test", user.FindByUserInfos)
 
 		// 添加k8s配置文件
 		v1Group.POST("/common/kubernetes/cluster", kubernetes.InstKubeConfig)

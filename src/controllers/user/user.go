@@ -112,34 +112,47 @@ func Login(c *gin.Context) {
 
 // 获取用户信息
 
+//func FindByUserinfo(c *gin.Context) {
+//	//fmt.Println(c.MustGet("uid").(string))
+//	//fmt.Println(c.MustGet("role").(string))
+//	// 若有高权限的token，则可以查询其他用户，则此处需要传递用户id，后面优化
+//	//uid := c.MustGet("uid").(string)
+//	uid := c.Param("uid") // 获取路径参数
+//	result, err := models.SelectUidUserQueryRow(uid)
+//	if err != nil {
+//		_log.Error("用户信息查询异常", err)
+//		var user models.MetaInfo
+//		user.RequestTime = time.Now().UnixNano()
+//		user.Msg = "Query exception"
+//		user.Code = "1"
+//		c.JSON(http.StatusUnauthorized, &user)
+//	} else {
+//		var user models.UserLoginStruct
+//		meta := &user.MetaInfo
+//		resp := &user.Response
+//
+//		// 构造返回数据
+//		meta.RequestTime = time.Now().UnixNano()
+//		meta.Msg = "successfully"
+//		meta.Code = "200"
+//		resp.Userid = result.USERID
+//		resp.Username = result.USERNAME
+//		resp.Nickname = result.NICKNAME
+//		resp.Role = result.ROLE
+//		resp.Expires = result.EXPIRES
+//		c.JSON(http.StatusOK, &user)
+//	}
+//}
+// 查询用户信息
 func FindByUserinfo(c *gin.Context) {
-	//fmt.Println(c.MustGet("uid").(string))
-	//fmt.Println(c.MustGet("role").(string))
-	// 若有高权限的token，则可以查询其他用户，则此处需要传递用户id，后面优化
-	//uid := c.MustGet("uid").(string)
-	uid := c.Param("uid") // 获取路径参数
-	result, err := models.SelectUidUserQueryRow(uid)
+	result, err := models.SelectByUserInfo(c.Param("uid"))
 	if err != nil {
 		_log.Error("用户信息查询异常", err)
-		var user models.MetaInfo
-		user.RequestTime = time.Now().UnixNano()
-		user.Msg = "Query exception"
-		user.Code = "1"
-		c.JSON(http.StatusUnauthorized, &user)
-	} else {
-		var user models.UserLoginStruct
-		meta := &user.MetaInfo
-		resp := &user.Response
-
-		// 构造返回数据
-		meta.RequestTime = time.Now().UnixNano()
-		meta.Msg = "successfully"
-		meta.Code = "200"
-		resp.Userid = result.USERID
-		resp.Username = result.USERNAME
-		resp.Nickname = result.NICKNAME
-		resp.Role = result.ROLE
-		resp.Expires = result.EXPIRES
-		c.JSON(http.StatusOK, &user)
+		msg := models.NewResMessage("404", "Query exception")
+		c.JSON(http.StatusOK, msg)
+		return
 	}
+	msg := models.NewResMessage("200", "successfully")
+	returns := models.NewReturns(result, msg)
+	c.JSON(http.StatusOK, returns)
 }

@@ -127,3 +127,17 @@ func SelectUidUserQueryRow(uid string) (*userInfo, error) {
 	}
 	return &u, err
 }
+
+// 查询用户详细信息
+func SelectByUserInfo(uid string) (*userCenter, error) {
+	var u userCenter
+	sqlStr := `SELECT user_center.ID, user_center.USERID,user_center.USERNAME,user_center.NICKNAME,
+				user_center.MOBILE,user_center.EMAIL,user_center.DESCRIBES,user_center.PICTURE,user_center.CREATETIME,user_center.UPDATETIME
+				FROM user inner join user_center on   (user.USERID=user_center.USERID) WHERE user.USERID=?`
+	var row = mysql.DB.QueryRow(sqlStr, uid)
+	err := row.Scan(&u.ID, &u.USERID, &u.USERNAME, &u.NICKNAME, &u.MOBILE, &u.EMAIL, &u.DESCRIBES, &u.PICTURE, &u.CREATETIME, &u.UPDATETIME)
+	if err != nil {
+		fmt.Println("asd", err.Error())
+	}
+	return &u, err
+}
