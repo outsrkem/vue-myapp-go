@@ -19,4 +19,4 @@ output/
 # vendor/
 logs/
 
-main/test.go
+src/main/test.go
