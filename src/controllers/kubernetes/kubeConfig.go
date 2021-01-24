@@ -73,6 +73,18 @@ func GetKubeConfig(c *gin.Context) {
 func DelKubeConfig(c *gin.Context) {
 	configId, _ := strconv.Atoi(c.Query("config_id"))
 	log.Info(configId)
+	row := models.DeleteKubeConfig(configId)
+	if row < 1 {
+		if row == 0 {
+			msg := models.NewResMessage("200", "Delete 0 records")
+			c.JSON(http.StatusOK, msg)
+			return
+		} else if row == -1 {
+			msg := models.NewResMessage("202", "Remove abnormal")
+			c.JSON(http.StatusAccepted, msg)
+			return
+		}
+	}
 	msg := models.NewResMessage("200", "Delete successful")
 	c.JSON(http.StatusOK, msg)
 }

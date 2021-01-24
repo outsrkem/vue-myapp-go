@@ -137,3 +137,23 @@ func FindByKubeConfigs(uid string, pageSize int, page int) map[string]interface{
 
 	return returns
 }
+
+// 删除集群配置
+func DeleteKubeConfig(cid int) int64 {
+	sqlStr := `DELETE FROM kube_config WHERE ID=?;`
+	ret, err := mysql.DB.Exec(sqlStr, cid)
+	if err != nil {
+		log.Error("delete failed, err:", err, ", table:kube_config")
+		return -1
+	}
+
+	n, err := ret.RowsAffected() // 操作影响的行数
+	if err != nil {
+		log.Error("get RowsAffected failed, err:", err, ", table:kube_config")
+		return -1
+	}
+
+	log.Info("delete success, affected rows:", n, ", ID:", cid, ", table:kube_config")
+	return n
+
+}
