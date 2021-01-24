@@ -63,11 +63,8 @@ func Login(c *gin.Context) {
 	// 用户名或密码不能为空
 	if loginPassword == "" || username == "" {
 		_log.Error("登录错误,用户名或密码为空")
-		var metaInfo models.GeneralErrorStruct
-		metaInfo.Code = "2014"
-		metaInfo.Msg = "The user name or password cannot be empty"
-		metaInfo.RequestTime = time.Now().UnixNano()
-		c.JSON(http.StatusForbidden, &metaInfo)
+		msg := models.NewResMessage("403", "The user name or password cannot be empty")
+		c.JSON(http.StatusForbidden, msg)
 		return
 	}
 
@@ -77,11 +74,8 @@ func Login(c *gin.Context) {
 	err := util.PasswordAuthentication(loginPassword, result.PASSWD)
 	if err != nil {
 		_log.Error("登录错误", err)
-		var user models.MetaInfo
-		user.RequestTime = time.Now().UnixNano()
-		user.Msg = "Logon failed"
-		user.Code = "1"
-		c.JSON(http.StatusUnauthorized, &user)
+		msg := models.NewResMessage("401", "Logon failed")
+		c.JSON(http.StatusUnauthorized, msg)
 	} else {
 		var user models.UserLoginStruct
 		meta := &user.MetaInfo

@@ -8,7 +8,6 @@ import (
 	"mana/src/models"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 var log = config.Log()
@@ -64,11 +63,10 @@ func GetKubeConfig(c *gin.Context) {
 	// 获取uid，(token 中获取)
 	uid := c.MustGet("uid").(string)
 
-	k8sJson := models.FindByKubeConfigs(uid, pageSize, page)
-	k8sJson.MetaInfo.Status = "200"
-	k8sJson.MetaInfo.Msg = "successfully"
-	k8sJson.MetaInfo.RequestTime = time.Now().UnixNano()
-	c.JSON(http.StatusOK, k8sJson)
+	res := models.FindByKubeConfigs(uid, pageSize, page)
+	msg := models.NewResMessage("200", "successfully")
+	returns := models.NewReturns(res, msg)
+	c.JSON(http.StatusOK, returns)
 }
 
 // 删除集群配置

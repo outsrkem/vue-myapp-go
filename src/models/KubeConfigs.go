@@ -68,9 +68,8 @@ func InstKubeConfig(k *kubeConfig) (string, error) {
 // 返回集群配置信息
 // /api/v1/common/kubernetes/cluster
 // ?page_size=9&page=1
-func FindByKubeConfigs(uid string, pageSize int, page int) *kubeConfigStruct {
+func FindByKubeConfigs(uid string, pageSize int, page int) map[string]interface{} {
 	var k = NewKubeConfig()
-	var k8sJson = NewKubeConfigStruct()
 	n := (page - 1) * pageSize
 	m := pageSize
 	sqlStr := `SELECT ID, USERID, CLUSTER_ALIAS, CLUSTER_USER, CURRENT_CONTEXT,
@@ -133,12 +132,8 @@ func FindByKubeConfigs(uid string, pageSize int, page int) *kubeConfigStruct {
 		pageNum = total/pageSize + 1
 	}
 
-	// 页码相关信息
-	k8sJson.Response.Items = items
-	k8sJson.Response.PageInfo.Page = page
-	k8sJson.Response.PageInfo.PageSize = pageSize
-	k8sJson.Response.PageInfo.Total = total
-	k8sJson.Response.PageInfo.PageNum = pageNum
+	pageInfo := NewPageInfo(page, pageSize, pageNum, total)
+	returns := NewResponse(items, pageInfo)
 
-	return k8sJson
+	return returns
 }
