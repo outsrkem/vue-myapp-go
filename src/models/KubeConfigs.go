@@ -157,3 +157,25 @@ func DeleteKubeConfig(cid int) int64 {
 	return n
 
 }
+
+// 获取k8s证书详情，用于k8s接口获取信息
+type K8sConfigParticulars struct {
+	Server                   string
+	CertificateAuthorityData string
+	ClientCertificateData    string
+	ClientKeyData            string
+}
+// 获取k8s证书详情
+func FindByK8sConfigParticulars(cid string) (*K8sConfigParticulars, error) {
+	//SELECT * FROM kube_config WHERE ID=6;
+	var k K8sConfigParticulars
+	sqlStr := `SELECT SERVER,CERTIFICATE_AUTHORITY_DATA,CLIENT_CERTIFICATE_DATA,CLIENT_KEY_DATA FROM kube_config WHERE ID=?;`
+	var row = mysql.DB.QueryRow(sqlStr, cid)
+	err := row.Scan(&k.Server, &k.CertificateAuthorityData, &k.ClientCertificateData, &k.ClientKeyData)
+	if err != nil {
+		log.Error(err.Error())
+
+	}
+	return &k, err
+
+}

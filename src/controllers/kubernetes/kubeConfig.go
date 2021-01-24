@@ -2,9 +2,11 @@ package kubernetes
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
 	"mana/src/config"
+	"mana/src/filters/util"
 	"mana/src/models"
 	"net/http"
 	"strconv"
@@ -92,12 +94,36 @@ func DelKubeConfig(c *gin.Context) {
 // 获取工作负载
 
 func GetWorkingLoad(c *gin.Context) {
-	cid := c.Param("cid")               // 获取路径参数
-	namespaces := c.Param("namespaces") // 获取路径参数
-	control := c.Param("control")       // 获取路径参数
-	log.Info(cid)
-	log.Info(namespaces)
-	log.Info(control)
+	cid := c.Param("cid")              // 获取路径参数
+	namespace := c.Param("namespaces") // 获取路径参数
+	control := c.Param("control")      // 获取路径参数
+
+	// 调用函数，获取负载信息
+	k, _ := models.FindByK8sConfigParticulars(cid)
+	// 获取名称空间下 deploy
+	url := k.Server + "/apis/apps/v1/namespaces/" + namespace + "/" + control
+	// 传递证书及url
+	k8s := util.NewK8sResources(k.CertificateAuthorityData, k.ClientCertificateData, k.ClientKeyData, url)
+	// 获取信息
+	body := util.K8sResourcesGet(k8s)
+
+
+
+	fmt.Println(string(*body))
+	/**
+	遍历json数据中item数组，使用gjson模块
+	*/
+	////定义索引i，gjson遍历数组，没有索引，需要自己设置
+	//i := 0
+	//
+	////计算数组长度
+	//n := len(gjson.Get(string(*body), "items").Array())
+	////初始化一个ItemsDpm结构体数组，用于存放遍历数据
+	//item := make([]map[string]string, n)
+
+	//foreach遍历item数组，如果遍历完成，返回false
+
+	// 返回数据
 	msg := models.NewResMessage("200", "Successful")
 	c.JSON(http.StatusOK, msg)
 }
