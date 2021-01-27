@@ -2,7 +2,6 @@ package kubernetes
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
 	"mana/src/config"
@@ -10,6 +9,7 @@ import (
 	"mana/src/models"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 var log = config.Log()
@@ -91,8 +91,24 @@ func DelKubeConfig(c *gin.Context) {
 	c.JSON(http.StatusOK, msg)
 }
 
-// 获取工作负载
+// 获取工作负载结构体
+type ContainersDpm struct {
+	Image        string `json:"image"`
+	ImageVersion string `json:"imageVersion"`
+	Name         string `json:"name"`
+}
+type ItemsDpm struct {
+	ID                int             `json:"id"`
+	Name              string          `json:"name"`
+	Namespace         string          `json:"namespace"`
+	Replicas          int64           `json:"replicas"`
+	AvailableReplicas int64           `json:"availableReplicas"`
+	CreationTimestamp string          `json:"creationTimestamp"`
+	LastUpdateTime    string          `json:"lastUpdateTime"`
+	Containers        []ContainersDpm `json:"containers"`
+}
 
+// 获取工作负载
 func GetWorkingLoad(c *gin.Context) {
 	cid := c.Param("cid")              // 获取路径参数
 	namespace := c.Param("namespaces") // 获取路径参数
@@ -107,9 +123,6 @@ func GetWorkingLoad(c *gin.Context) {
 	// 获取信息
 	body := util.K8sResourcesGet(k8s)
 
-
-
-	fmt.Println(string(*body))
 	/**
 	遍历json数据中item数组，使用gjson模块
 	*/
@@ -122,8 +135,58 @@ func GetWorkingLoad(c *gin.Context) {
 	//item := make([]map[string]string, n)
 
 	//foreach遍历item数组，如果遍历完成，返回false
+	i := 0
+	items := gjson.Get(string(*body), "items")
+	n := len(items.Array())
+	itemDpm := make([]ItemsDpm, n)
+	//foreach遍历item数组，如果遍历完成，返回false
+	items.ForEach(func(_, value gjson.Result) bool {
+		itemDpm[i].ID = i + 1
+		itemDpm[i].Name = value.Map()["metadata"].Map()["name"].Str
+		itemDpm[i].Namespace = "namespace"
+
+		//k8s时间转为csr时区
+		CreationTimestamp := value.Map()["metadata"].Map()["creationTimestamp"]
+		itemDpm[i].CreationTimestamp = CreationTimestamp.Time().UTC().Local().Format("2006-01-02 15:04:05")
+		LastUpdateTime := value.Map()["status"].Map()["conditions"].Array()[0].Map()["lastUpdateTime"]
+		itemDpm[i].LastUpdateTime = LastUpdateTime.Time().UTC().Local().Format("2006-01-02 15:04:05")
+
+		replicas := value.Map()["spec"].Map()["replicas"].Int()
+		itemDpm[i].Replicas = replicas
+		//因为replicas参数如果为0，没有AvailableReplicas和unavailableReplicas参数
+		if replicas == 0 {
+			itemDpm[i].AvailableReplicas = 0
+		} else if value.Map()["status"].Map()["availableReplicas"].Int() != 0 {
+			itemDpm[i].AvailableReplicas = value.Map()["status"].Map()["availableReplicas"].Int()
+		} else {
+			itemDpm[i].AvailableReplicas = replicas - value.Map()["status"].Map()["unavailableReplicas"].Int()
+		}
+
+		//如果deployment有多容器，遍历多容器数组
+		c := value.Map()["spec"].Map()["template"].Map()["spec"].Map()["containers"]
+		l := len(c.Array())
+		containersDpm := make([]ContainersDpm, l)
+		y := 0
+		c.ForEach(func(_, v gjson.Result) bool {
+			containersDpm[y].Name = v.Map()["name"].Str
+			containersDpm[y].Image = v.Map()["image"].Str
+			version := v.Map()["image"].Str
+			s := version[strings.LastIndex(version, ":")+1:]
+			containersDpm[y].ImageVersion = s
+			y++
+			return true
+		})
+
+		//把ContainersDpm类型切片赋值哥返回对象
+		itemDpm[i].Containers = containersDpm
+		i++
+		return true
+	})
 
 	// 返回数据
-	msg := models.NewResMessage("200", "Successful")
-	c.JSON(http.StatusOK, msg)
+	pageInfo := models.NewPageInfo(1, 10, 1, n)
+	msg := models.NewResMessage("200", "successfully")
+	response := models.NewResponse(itemDpm, pageInfo)
+	returns := models.NewReturns(response, msg)
+	c.JSON(http.StatusOK, returns)
 }
