@@ -45,10 +45,10 @@ func Index(r *gin.Engine) {
 		v1Group.GET("/common/kubernetes/cluster/:cid/namespaces", kubernetes.GetNamespace)
 
 		// 获取k8s控制器资源
-		v1Group.GET("/common/kubernetes/cluster/:cid/control/:namespaces/:control", kubernetes.GetKubernetesResource)
+		v1Group.GET("/common/kubernetes/cluster/:cid/control/:namespaces/:control", kubernetes.GetKubernetesControl)
 
 		// 获取k8s工作负载详细信息
 		// /apis/apps/v1/namespaces/kube-system/daemonsets/kube-flannel-ds-amd64
-		v1Group.GET("/common/kubernetes/cluster/:cid/pods/:namespaces/:control/:podsName", kubernetes.GetKubernetesResource)
+		v1Group.GET("/common/kubernetes/cluster/:cid/pods/:namespaces/:control/:podsName", kubernetes.GetKubernetesPods)
 	}
 }

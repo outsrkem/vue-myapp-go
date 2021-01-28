@@ -28,9 +28,8 @@ func GetNamespace(c *gin.Context) {
 	}
 
 	// 接口返回结构
-	pageInfo := models.NewPageInfo(1, 10, 1, num)
 	msg := models.NewResMessage("200", "successfully")
-	response := models.NewResponse(namespace, pageInfo)
+	response := models.NewResponse(namespace, nil)
 	returns := models.NewReturns(response, msg)
 
 	c.JSON(http.StatusOK, returns)
