@@ -7,23 +7,25 @@ import (
 
 func GetKubernetesResource(c *gin.Context) {
 	cid := c.Param("cid")
-	resourceName := c.Param("resource")
-	k8sLink := c.DefaultQuery("k8s_link", "-1")
-	if k8sLink == "-1" {
-		log.Error("selfLink 无效")
+	control := c.Param("control")
+	namespaces := c.Param("namespaces")
+
+	// selfLink
+	// /apis/apps/v1/namespaces/kube-system/daemonsets/kube-flannel-ds-amd64
+	k8sLink := "/apis/apps/v1/namespaces/" + namespaces + "/" + control
+
+	if control == "nil" || namespaces == "" {
+		log.Error("namespaces namespaces 无效")
 		return
 	}
 	log.Info(cid)
-	if resourceName == "namespaces" {
-		returns := GetNamespace(cid, k8sLink)
-		c.JSON(http.StatusOK, returns)
-
-	} else if resourceName == "deployments" {
+	if control == "deployments" {
 		// deployments
+
 		returns := GetWorkingLoad(cid, k8sLink)
 		c.JSON(http.StatusOK, returns)
 
-	} else if resourceName == "daemonset" {
+	} else if control == "daemonset" {
 		// daemonset
 		returns := GetWorkingLoad(cid, k8sLink)
 		c.JSON(http.StatusOK, returns)

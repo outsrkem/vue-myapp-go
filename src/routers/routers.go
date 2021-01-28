@@ -41,9 +41,14 @@ func Index(r *gin.Engine) {
 		// 删除集群配置
 		v1Group.DELETE("/common/kubernetes/cluster", kubernetes.DelKubeConfig)
 
-		// 获取k8s名称空间
-		
-		// 获取k8s资源
-		v1Group.GET("/common/kubernetes/cluster/:cid/:resource", kubernetes.GetKubernetesResource)
+		// 获取k8s名称空间/common/kubernetes/cluster/:cid/work/namespaces
+		v1Group.GET("/common/kubernetes/cluster/:cid/namespaces", kubernetes.GetNamespace)
+
+		// 获取k8s控制器资源
+		v1Group.GET("/common/kubernetes/cluster/:cid/control/:namespaces/:control", kubernetes.GetKubernetesResource)
+
+		// 获取k8s工作负载详细信息
+		// /apis/apps/v1/namespaces/kube-system/daemonsets/kube-flannel-ds-amd64
+		v1Group.GET("/common/kubernetes/cluster/:cid/pods/:namespaces/:control/:podsName", kubernetes.GetKubernetesResource)
 	}
 }

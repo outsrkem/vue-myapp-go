@@ -1,16 +1,19 @@
 package kubernetes
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
 	"mana/src/filters/util"
 	"mana/src/models"
+	"net/http"
 )
 
 // 获取k8s名称空间
-func GetNamespace(cid, k8sLink string) *map[string]interface{} {
+func GetNamespace(c *gin.Context) {
 	//
+	cid := c.Param("cid")
 	k, _ := models.FindByK8sConfigParticulars(cid)
-	selfLink := k.Server + k8sLink
+	selfLink := k.Server + "/api/v1/namespaces"
 	log.Info("get Namespace, kubernetes selfLink: ", selfLink)
 	k8s := util.NewK8sResources(k.CertificateAuthorityData, k.ClientCertificateData, k.ClientKeyData, selfLink)
 	// 获取信息
@@ -30,5 +33,5 @@ func GetNamespace(cid, k8sLink string) *map[string]interface{} {
 	response := models.NewResponse(namespace, pageInfo)
 	returns := models.NewReturns(response, msg)
 
-	return &returns
+	c.JSON(http.StatusOK, returns)
 }
