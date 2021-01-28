@@ -44,5 +44,7 @@ func Index(r *gin.Engine) {
 		// 获取工作负载
 		v1Group.GET("/common/kubernetes/cluster/:cid/:namespaces/:control", kubernetes.GetWorkingLoad)
 
+		// 获取名称空间
+		v1Group.GET("/common/kubernetes/cluster/:cid", kubernetes.GetNamespace)
 	}
 }
