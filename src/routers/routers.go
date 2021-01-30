@@ -3,6 +3,8 @@ package routers
 import (
 	"github.com/gin-gonic/gin"
 	"mana/src/controllers/kubernetes"
+	"mana/src/controllers/navigation"
+	"mana/src/controllers/resource"
 	"mana/src/controllers/user"
 	"mana/src/filters/util"
 	"net/http"
@@ -31,6 +33,12 @@ func Index(r *gin.Engine) {
 
 		v1Group.GET("/common/user/userinfo/:uid", user.FindByUserinfo)
 		//v1Group.GET("/common/user/userinfo/:uid/test", user.FindByUserInfos)
+
+		// 导航链接
+		v1Group.GET("/common/navigation/links", navigation.GetResourceLinks)
+
+		// 主机监控
+		v1Group.GET("/common/resource/monitor", resource.GetHostMonitorInfo)
 
 		// 添加k8s配置文件
 		v1Group.POST("/common/kubernetes/cluster", kubernetes.InstKubeConfig)

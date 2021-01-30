@@ -74,3 +74,20 @@ CREATE TABLE kube_config (
   CLIENT_KEY_DATA text NOT NULL COMMENT '用户证书私钥',
   PRIMARY KEY (ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='集群配置表';
+
+-- ----------------------------
+-- Table structure for resource_links
+-- ----------------------------
+-- DROP TABLE IF EXISTS resource_links;
+CREATE TABLE resource_links (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  USERID varchar(255) NOT NULL COMMENT '用户id',
+  LINKNAME varchar(255) NOT NULL COMMENT '链接名',
+  LINKURL varchar(255) NOT NULL COMMENT 'url',
+  DESCRIBES varchar(255) DEFAULT NULL COMMENT '说明',
+  CATEGORY varchar(255) DEFAULT NULL COMMENT '类别',
+  ACTIVATE int(11) NOT NULL DEFAULT '1' COMMENT '状态，1 有效，0 无效',
+  CREATETIME varchar(255) DEFAULT NULL COMMENT '创建时间',
+  UPDATETIME varchar(255) DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (ID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='导航链接';
