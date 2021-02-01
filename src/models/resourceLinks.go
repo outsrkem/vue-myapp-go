@@ -38,12 +38,17 @@ func FindByResourceLinks() (*map[string]interface{}, error) {
 			log.Error("Exception reading database result", err)
 		}
 
+		createTime, _ := strconv.ParseInt(l.CREATETIME, 10, 64)
+		updateTime, _ := strconv.ParseInt(l.UPDATETIME, 10, 64)
 		item := make(map[string]string)
 		item["id"] = l.ID
 		item["name"] = l.LINKNAME
 		item["content"] = l.LINKURL
 		item["describes"] = l.DESCRIBES
+		item["activate"] = l.ACTIVATE
 		item["category"] = l.CATEGORY
+		item["createTime"] = time.Unix(createTime, 0).Format("2006-01-02 15:04:05")
+		item["updateTime"] = time.Unix(updateTime, 0).Format("2006-01-02 15:04:05")
 		items = append(items, item)
 	}
 
@@ -52,7 +57,7 @@ func FindByResourceLinks() (*map[string]interface{}, error) {
 }
 
 // 根据id查询导航链接
-func FindByResourceLinksTheId(id int) (*map[string]string, error) {
+func FindByResourceLinksTheId(id string) (*map[string]string, error) {
 	var l resourceLinks
 	sqlStr := `SELECT ID,USERID,LINKNAME,LINKURL,DESCRIBES,CATEGORY,ACTIVATE,CREATETIME,UPDATETIME FROM resource_links WHERE ID=?;`
 	var row = mysql.DB.QueryRow(sqlStr, id)

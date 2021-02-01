@@ -34,12 +34,13 @@ func Index(r *gin.Engine) {
 		v1Group.GET("/common/user/userinfo/:uid", user.FindByUserinfo)
 		//v1Group.GET("/common/user/userinfo/:uid/test", user.FindByUserInfos)
 
-		// 获取导航链接列表
+		// 获取导航链接列表，添加链接，编辑，删除，获取单条导航链接记录
 		v1Group.GET("/common/navigation/links", navigation.GetResourceLinks)
+		v1Group.POST("/common/navigation/links", navigation.AddResourceLink)
+		v1Group.GET("/common/navigation/links/:id", navigation.GetResourceLinks)
+		v1Group.PATCH("/common/navigation/links/:id", navigation.UpdateResourceLink)
+		v1Group.DELETE("/common/navigation/links/:id", navigation.DeleteResourceLink)
 
-		// 编辑，删除导航链接记录
-		v1Group.PATCH("/common/navigation/links/:id", navigation.GetResourceLinks)
-		v1Group.DELETE("/common/navigation/links/:id", navigation.GetResourceLinks)
 
 		// 主机监控
 		v1Group.GET("/common/resource/monitor", resource.GetHostMonitorInfo)
