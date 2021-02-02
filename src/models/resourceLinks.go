@@ -7,15 +7,23 @@ import (
 )
 
 type resourceLinks struct {
-	ID         string // id
-	USERID     string // 用户id
-	LINKNAME   string // 链接名
-	LINKURL    string // url
-	DESCRIBES  string // 说明
-	CATEGORY   string // 类别
-	ACTIVATE   string // 状态
-	CREATETIME string // 创建时间
-	UPDATETIME string // 更新时间
+	ID         string `json:"id"`         // id
+	USERID     string `json:"userid"`     // 用户id
+	LINKNAME   string `json:"linkname"`   // 链接名
+	LINKURL    string `json:"linkurl"`    // url
+	DESCRIBES  string `json:"describes"`  // 说明
+	CATEGORY   string `json:"category"`   // 类别
+	ACTIVATE   string `json:"activate"`   // 状态
+	CREATETIME string `json:"createTime"` // 创建时间
+	UPDATETIME string `json:"updateTime"` // 更新时间
+}
+
+func NewResourceLinks() *resourceLinks {
+	return &resourceLinks{
+		ACTIVATE:   "0",
+		UPDATETIME: strconv.FormatInt(time.Now().Unix(), 10),
+		CREATETIME: strconv.FormatInt(time.Now().Unix(), 10),
+	}
 }
 
 // 查询导航链接列表
@@ -65,7 +73,7 @@ func FindByResourceLinksTheId(id string) (*map[string]string, error) {
 		&l.CREATETIME, &l.UPDATETIME)
 
 	if err != nil {
-		log.Error("exec  query failed, ", sqlStr , "ID=",id , err)
+		log.Error("exec  query failed, ", sqlStr, "ID=", id, err)
 		return nil, err
 	}
 
@@ -83,4 +91,64 @@ func FindByResourceLinksTheId(id string) (*map[string]string, error) {
 
 	returns := item
 	return &returns, err
+}
+
+// 插入
+func InsertResourceLink(l *resourceLinks) (string, error) {
+	// 插入用户表信息
+	sqlStr1 := `INSERT INTO resource_links (USERID, LINKNAME, LINKURL, DESCRIBES, CATEGORY, ACTIVATE, CREATETIME, UPDATETIME)
+                         VALUES (?,?,?,?,?,?,?,?);`
+	ret, err := mysql.DB.Exec(sqlStr1, l.USERID, l.LINKNAME, l.LINKURL, l.DESCRIBES,
+		l.CATEGORY, l.ACTIVATE, l.CREATETIME, l.UPDATETIME)
+
+	if err != nil {
+		log.Error("insert failed,", err)
+		return "", err
+	}
+
+	theID, err := ret.LastInsertId() // 新插入数据的id
+	if err != nil {
+		log.Error("get last Insert ID failed, err:", err)
+		return "", err
+	}
+
+	return strconv.FormatInt(theID, 10), err
+
+}
+
+// 更新
+func UpdateResourceLinkToDb(l *resourceLinks) (string, error) {
+	// 插入用户表信息
+	sqlStr1 := `UPDATE resource_links SET LINKNAME=?,LINKURL=?,DESCRIBES=?,CATEGORY=?,ACTIVATE=?,UPDATETIME=? WHERE ID=?`
+	ret, err := mysql.DB.Exec(sqlStr1, l.LINKNAME, l.LINKURL, l.DESCRIBES, l.CATEGORY, l.ACTIVATE, l.UPDATETIME, l.ID)
+
+	if err != nil {
+		log.Error("update failed,", err)
+		return "", err
+	}
+	n, err := ret.RowsAffected() // 操作影响的行数
+	if err != nil {
+		log.Error("get RowsAffected failed, ", err)
+		return "", err
+	}
+
+	return strconv.FormatInt(n, 10), err
+
+}
+
+// 删除
+func DeleteLink(id string) (string, error) {
+	sqlStr1 := `DELETE FROM resource_links WHERE ID=?`
+	ret, err := mysql.DB.Exec(sqlStr1, id)
+	if err != nil {
+		log.Error("delete failed, err ", err)
+		return "", err
+	}
+	n, err := ret.RowsAffected() // 操作影响的行数
+	if err != nil {
+		log.Error("get RowsAffected failed, err: ", err)
+		return "", err
+	}
+	log.Error("delete success, affected rows: ", err)
+	return strconv.FormatInt(n, 10), nil
 }
