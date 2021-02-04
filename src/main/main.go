@@ -1,26 +1,19 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
 	"mana/src/config"
 	"mana/src/connections/database/mysql"
 	"mana/src/routers"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	// 加载日志
 	log := config.Log()
 
-	// 加载配置文件
-	//cfg, err := config.ParseConfig("../config/config.json")
-	//if err != nil {
-	//	log.Error("配置文件读取错误")
-	//	panic(err.Error())
-	//}
-
 	// 加载默认配置
-	cfg := config.ParseConfig()
+	cfg := config.InitConfig()
 
 	// 连接数据库MySql
 	mysql.InitDB(cfg)

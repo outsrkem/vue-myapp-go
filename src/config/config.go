@@ -1,5 +1,10 @@
 package config
 
+import (
+	"flag"
+)
+
+// Config 配置结构体
 type Config struct {
 	Listen        string `json:"listen"`
 	Port          string `json:"port"`
@@ -13,34 +18,21 @@ type Config struct {
 	DbMaxOpenConn int    `json:"db_MaxOpenConn"`
 }
 
-//var _cfg *Config = nil
-// 配置解析
-//func ParseConfig(path string) (*Config, error) {
-//	file, err := os.Open(path)
-//	if err != nil {
-//		panic(err)
-//	}
-//	defer file.Close()
-//	render := bufio.NewReader(file)
-//	decoder := json.NewDecoder(render)
-//	if err = decoder.Decode(&_cfg); err != nil {
-//		return nil, err
-//	}
-//	return _cfg, nil
-//}
-
-// 配置
-func ParseConfig() *Config {
+// InitConfig 初始化配置
+func InitConfig() *Config {
 	var _cfg Config
-	_cfg.Listen = "0.0.0.0"
-	_cfg.Port = "9443"
-	_cfg.DbUser = "abc"
-	_cfg.DbPassword = "123456"
-	_cfg.DbNetwork = "tcp"
-	_cfg.DbServer = "10.10.10.10"
-	_cfg.DbPort = "3306"
-	_cfg.DbName = "mana"
-	_cfg.DbMaxIdleConn = 5
-	_cfg.DbMaxOpenConn = 10
+	flag.StringVar(&_cfg.Listen, "bind-address", "0.0.0.0", "bind-address")
+	flag.StringVar(&_cfg.Port, "secure-port", "9443", "secure-port")
+	flag.StringVar(&_cfg.DbUser, "db-username", "abc", "db-username")
+	flag.StringVar(&_cfg.DbPassword, "db-password", "123456", "db-password")
+	flag.StringVar(&_cfg.DbNetwork, "db-network", "tcp", "db-network")
+	flag.StringVar(&_cfg.DbServer, "db-server", "127.0.0.1", "db-server")
+	flag.StringVar(&_cfg.DbPort, "db-port", "3306", "db-port")
+	flag.StringVar(&_cfg.DbName, "db-name", "mana", "db-name")
+	flag.IntVar(&_cfg.DbMaxIdleConn, "db-maxidleconn", 5, "DbMaxIdleConn")
+	flag.IntVar(&_cfg.DbMaxOpenConn, "db-maxopenconn", 10, "DbMaxOpenConn")
+
+	// 解析命令行参数
+	flag.Parse()
 	return &_cfg
 }

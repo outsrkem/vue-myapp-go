@@ -4,6 +4,7 @@ import "github.com/sirupsen/logrus"
 
 var log = logrus.New()
 
+// Log 日志格式
 func Log() *logrus.Logger {
 	log.SetLevel(logrus.InfoLevel)
 	log.SetFormatter(&logrus.TextFormatter{
