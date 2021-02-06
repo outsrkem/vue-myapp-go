@@ -11,7 +11,7 @@ import (
 // 用户表
 type userInfo struct {
 	ID         string `json:"id"`         // id
-	USERID     string `json:"name"`       // 用户id
+	USERID     string `json:"userid"`     // 用户id
 	USERNAME   string `json:"username"`   // 用户名
 	NICKNAME   string `json:"nickname"`   // 昵称
 	ROLE       string `json:"role"`       // 角色
@@ -24,7 +24,7 @@ type userInfo struct {
 
 type userCenter struct {
 	ID         string `json:"id"`         // id
-	USERID     string `json:"name"`       // 用户id,外键
+	USERID     string `json:"userid"`     // 用户id,外键
 	USERNAME   string `json:"username"`   // 用户名，外键
 	NICKNAME   string `json:"nickname"`   // 昵称
 	MOBILE     string `json:"mobile"`     //手机
@@ -35,7 +35,7 @@ type userCenter struct {
 	UPDATETIME string `json:"updatetime"` // 最近更新时间
 }
 
-// 注册用户
+// InstUser 注册用户
 func InstUser(name string, passwd string) (map[string]string, error) {
 	userInfo := make(map[string]string)
 	atTimes := time.Now().Unix()
@@ -83,7 +83,7 @@ func InstUser(name string, passwd string) (map[string]string, error) {
 	return userInfo, err
 }
 
-// 查询单条
+// SelectUserQueryRow 查询单条
 func SelectUserQueryRow(username string) (*userInfo, error) {
 	var u userInfo
 	sqlStr := `SELECT ID,USERID,USERNAME,NICKNAME,ROLE,PASSWD,EXPIRES,INACTIVE,CREATETIME,UPDATETIME FROM  user WHERE USERNAME = ?`
@@ -98,7 +98,7 @@ func SelectUserQueryRow(username string) (*userInfo, error) {
 	return &u, err
 }
 
-// 查询多条
+// SelectUserQueryMultiRow 查询多条
 func SelectUserQueryMultiRow(id int) {
 	// 1.sql
 	sqlStr := `SELECT * FROM  user WHERE ID > ?`
@@ -121,7 +121,7 @@ func SelectUserQueryMultiRow(id int) {
 
 }
 
-// 查询单条
+// SelectUidUserQueryRow 查询单条
 func SelectUidUserQueryRow(uid string) (*userInfo, error) {
 	var u userInfo
 	sqlStr := `SELECT ID,USERID,USERNAME,NICKNAME,ROLE,PASSWD,EXPIRES,INACTIVE,CREATETIME,UPDATETIME FROM  user WHERE USERID = ?`
@@ -134,7 +134,7 @@ func SelectUidUserQueryRow(uid string) (*userInfo, error) {
 	return &u, err
 }
 
-// 查询用户详细信息
+// SelectByUserInfo 查询用户详细信息
 func SelectByUserInfo(uid string) (*userCenter, error) {
 	var u userCenter
 	sqlStr := `SELECT user_center.ID, user_center.USERID,user_center.USERNAME,user_center.NICKNAME,
