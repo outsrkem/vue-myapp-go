@@ -3,7 +3,8 @@ package models
 import (
 	"fmt"
 	"mana/src/connections/database/mysql"
-	"strconv"
+	"mana/src/filters/uuid"
+	"strings"
 	"time"
 )
 
@@ -39,7 +40,9 @@ func InstUser(name string, passwd string) (map[string]string, error) {
 	userInfo := make(map[string]string)
 	atTimes := time.Now().Unix()
 	atTimesStr := time.Unix(atTimes, 0).Format("2006-01-02 15:04:05")
-	uid := time.Now().UnixNano()
+	// 使用uuid，并去除“-”
+	uuid, _ := uuid.NewV4()
+	uid := strings.Replace(uuid.String(), "-", "", -1)
 	nickname := name
 	role, expires, inactive := 3, 2, 1
 	tx, err := mysql.DB.Begin() // 开启事务
@@ -74,7 +77,7 @@ func InstUser(name string, passwd string) (map[string]string, error) {
 		return userInfo, err
 	}
 
-	userInfo["userid"] = strconv.FormatInt(uid, 10) // 转换为string类型
+	userInfo["userid"] = uid
 	userInfo["username"] = name
 
 	return userInfo, err
