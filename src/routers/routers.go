@@ -18,6 +18,9 @@ func Index(r *gin.Engine) {
 			"message": "successfully",
 		})
 	})
+	r.HEAD("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK,"successfully")
+	})
 
 	// 用户登录
 	r.POST("/api/v1/common/user/login", user.Login)
