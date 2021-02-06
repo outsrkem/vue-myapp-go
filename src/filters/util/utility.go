@@ -2,6 +2,7 @@ package util
 
 import (
 	"fmt"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -17,12 +18,15 @@ func PasswordBcrypt(password string) (string, error) {
 	return encodePassword, err
 }
 
-// 解密密码
-func PasswordAuthentication(loginPassword string, password string) error {
+// PasswordAuthentication 密码校验
+func PasswordAuthentication(loginPassword string, password string) bool {
 	// 密码验证
 	// password 加密的密码
 	// 用户登录时输入的密码 loginPassword
 	// loginPassword = "123456"
-	err := bcrypt.CompareHashAndPassword([]byte(password), []byte(loginPassword)) //验证（对比）
-	return err
+	if err := bcrypt.CompareHashAndPassword([]byte(password), []byte(loginPassword)); err != nil { //验证（对比）
+		return false
+	}
+	// 密码校验通过
+	return true
 }

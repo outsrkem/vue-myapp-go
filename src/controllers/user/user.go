@@ -1,12 +1,13 @@
 package user
 
 import (
-	"github.com/gin-gonic/gin"
 	"mana/src/config"
 	"mana/src/filters/util"
 	"mana/src/models"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 // 日志
@@ -18,7 +19,7 @@ type userRegisterInfo struct {
 	Password string `json:"password"`
 }
 
-// 用户注册
+// InstUser 用户注册
 func InstUser(c *gin.Context) {
 
 	var userRegisterInfo userRegisterInfo
@@ -52,7 +53,7 @@ func InstUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, returns)
 }
 
-// 用户登录
+// Login 用户登录
 func Login(c *gin.Context) {
 	var userLoginInfo models.UserLoginInfo
 	if err := c.BindJSON(&userLoginInfo); err != nil {
@@ -70,68 +71,36 @@ func Login(c *gin.Context) {
 
 	result, _ := models.SelectUserQueryRow(username)
 	_log.Info("登录用户===> ", username)
+
 	// 校验密码
-	err := util.PasswordAuthentication(loginPassword, result.PASSWD)
-	if err != nil {
-		_log.Error("登录错误", err)
+	if !util.PasswordAuthentication(loginPassword, result.PASSWD) {
+		_log.Error("密码校验失败")
 		msg := models.NewResMessage("401", "Logon failed")
 		c.JSON(http.StatusUnauthorized, msg)
-	} else {
-		var user models.UserLoginStruct
-		meta := &user.MetaInfo
-		resp := &user.Response
-
-		// 生成token
-		token := util.EncodeAuthToken(result.USERID, result.USERNAME, result.ROLE)
-
-		// 构造返回数据
-		meta.RequestTime = time.Now().UnixNano()
-		meta.Msg = "login successfully"
-		meta.Code = "200"
-		resp.Userid = result.USERID
-		resp.Username = result.USERNAME
-		resp.Nickname = result.NICKNAME
-		resp.Role = result.ROLE
-		resp.Expires = result.EXPIRES
-		resp.Token = token
-		c.JSON(http.StatusOK, &user)
+		return
 	}
+
+	var user models.UserLoginStruct
+	meta := &user.MetaInfo
+	resp := &user.Response
+
+	// 生成token
+	token := util.EncodeAuthToken(result.USERID, result.USERNAME, result.ROLE)
+
+	// 构造返回数据
+	meta.RequestTime = time.Now().UnixNano()
+	meta.Msg = "login successfully"
+	meta.Code = "200"
+	resp.Userid = result.USERID
+	resp.Username = result.USERNAME
+	resp.Nickname = result.NICKNAME
+	resp.Role = result.ROLE
+	resp.Expires = result.EXPIRES
+	resp.Token = token
+	c.JSON(http.StatusOK, &user)
 }
 
-// 获取用户信息
-
-//func FindByUserinfo(c *gin.Context) {
-//	//fmt.Println(c.MustGet("uid").(string))
-//	//fmt.Println(c.MustGet("role").(string))
-//	// 若有高权限的token，则可以查询其他用户，则此处需要传递用户id，后面优化
-//	//uid := c.MustGet("uid").(string)
-//	uid := c.Param("uid") // 获取路径参数
-//	result, err := models.SelectUidUserQueryRow(uid)
-//	if err != nil {
-//		_log.Error("用户信息查询异常", err)
-//		var user models.MetaInfo
-//		user.RequestTime = time.Now().UnixNano()
-//		user.Msg = "Query exception"
-//		user.Code = "1"
-//		c.JSON(http.StatusUnauthorized, &user)
-//	} else {
-//		var user models.UserLoginStruct
-//		meta := &user.MetaInfo
-//		resp := &user.Response
-//
-//		// 构造返回数据
-//		meta.RequestTime = time.Now().UnixNano()
-//		meta.Msg = "successfully"
-//		meta.Code = "200"
-//		resp.Userid = result.USERID
-//		resp.Username = result.USERNAME
-//		resp.Nickname = result.NICKNAME
-//		resp.Role = result.ROLE
-//		resp.Expires = result.EXPIRES
-//		c.JSON(http.StatusOK, &user)
-//	}
-//}
-// 查询用户信息
+// FindByUserinfo 查询用户信息
 func FindByUserinfo(c *gin.Context) {
 	result, err := models.SelectByUserInfo(c.Param("uid"))
 	if err != nil {
