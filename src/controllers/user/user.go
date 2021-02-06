@@ -102,7 +102,15 @@ func Login(c *gin.Context) {
 
 // FindByUserinfo 查询用户信息
 func FindByUserinfo(c *gin.Context) {
-	result, err := models.SelectByUserInfo(c.Param("uid"))
+	uid := c.Param("uid")
+	// 参数校验
+	if !util.RegexpMatchString(uid,"^([0-9]|[a-f]){32}$") {
+		msg := models.NewResMessage("400", "The parameter ID must be an integer, ^([0-9]|[a-f]){32}$ ")
+		c.JSON(http.StatusBadRequest, msg)
+		return
+	}
+
+	result, err := models.SelectByUserInfo(uid)
 	if err != nil {
 		_log.Error("用户信息查询异常", err)
 		msg := models.NewResMessage("404", "Query exception")
