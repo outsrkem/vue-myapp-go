@@ -136,7 +136,7 @@ func UpdateResourceLinkToDb(l *resourceLinks) (string, error) {
 
 }
 
-// 删除
+// DeleteLink 删除
 func DeleteLink(id string) (string, error) {
 	sqlStr1 := `DELETE FROM resource_links WHERE ID=?`
 	ret, err := mysql.DB.Exec(sqlStr1, id)
@@ -149,6 +149,6 @@ func DeleteLink(id string) (string, error) {
 		log.Error("get RowsAffected failed, err: ", err)
 		return "", err
 	}
-	log.Error("delete success, affected rows: ", err)
+	log.Info("Delete navigation links success, affected rows: ", n)
 	return strconv.FormatInt(n, 10), nil
 }
