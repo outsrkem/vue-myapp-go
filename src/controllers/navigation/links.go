@@ -2,12 +2,13 @@ package navigation
 
 import (
 	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"github.com/tidwall/gjson"
 	"mana/src/config"
 	"mana/src/models"
 	"net/http"
 	"regexp"
+
+	"github.com/gin-gonic/gin"
+	"github.com/tidwall/gjson"
 )
 
 var log = config.Log()
@@ -78,6 +79,7 @@ func AddResourceLink(c *gin.Context) {
 
 	name := gjson.Get(string(data), "name").String()
 	url := gjson.Get(string(data), "url").String()
+	activate := gjson.Get(string(data), "activate").String()
 	category := gjson.Get(string(data), "category").String()
 	describes := gjson.Get(string(data), "describes").String()
 	if name == "" || url == "" || category == "" || describes == "" || uid == "" {
@@ -89,6 +91,7 @@ func AddResourceLink(c *gin.Context) {
 	l.USERID = uid
 	l.LINKNAME = name
 	l.LINKURL = url
+	l.ACTIVATE = activate
 	l.CATEGORY = category
 	l.DESCRIBES = describes
 
