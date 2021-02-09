@@ -3,6 +3,7 @@ package navigation
 import (
 	"encoding/json"
 	"mana/src/config"
+	"mana/src/filters/util"
 	"mana/src/models"
 	"net/http"
 	"regexp"
@@ -79,10 +80,26 @@ func AddResourceLink(c *gin.Context) {
 
 	name := gjson.Get(string(data), "name").String()
 	url := gjson.Get(string(data), "url").String()
+	// 参数校验
+	if !util.RegexpMatchString(url, "^https?://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]$") {
+		msg := models.NewResMessage("400", "The 'url' parameter is abnormal, ^https?://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]$ ")
+		c.JSON(http.StatusBadRequest, msg)
+		return
+	}
 	activate := gjson.Get(string(data), "activate").String()
+	if !util.RegexpMatchString(activate, "^(0|1)$") {
+		msg := models.NewResMessage("400", "The 'activate' is abnormal, ^(0|1)$ ")
+		c.JSON(http.StatusBadRequest, msg)
+		return
+	}
 	category := gjson.Get(string(data), "category").String()
+	if !util.RegexpMatchString(category, "^[1-5]$") {
+		msg := models.NewResMessage("400", "The 'category' is abnormal, ^[1-5]$ ")
+		c.JSON(http.StatusBadRequest, msg)
+		return
+	}
 	describes := gjson.Get(string(data), "describes").String()
-	if name == "" || url == "" || category == "" || describes == "" || uid == "" {
+	if uid == "" || name == "" || url == "" || activate == "" || category == "" || describes == "" {
 		msg := models.NewResMessage("400", "The request body is abnormal. The key field cannot be empty.")
 		c.JSON(http.StatusBadRequest, &msg)
 		return
