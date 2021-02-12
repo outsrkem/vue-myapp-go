@@ -27,12 +27,56 @@ func NewResourceLinks() *resourceLinks {
 }
 
 // 查询导航链接列表
-func FindByResourceLinks() (*map[string]interface{}, error) {
+func FindByResourceLinks(pageSize, page int, activate, category string) (*map[string]interface{}, error) {
 	var l resourceLinks
+	n, m := (page - 1) * pageSize, pageSize
 	var items []map[string]string
 	items = make([]map[string]string, 0)
-	sqlStr := `SELECT ID,USERID,LINKNAME,LINKURL,DESCRIBES,CATEGORY,ACTIVATE,CREATETIME,UPDATETIME FROM resource_links;`
-	rows, err := mysql.DB.Query(sqlStr)
+	// SELECT COUNT(*) FROM kube_config
+	csqCountStr := `SELECT COUNT(*) FROM resource_links WHERE 1=1`
+	sqlStr := `SELECT ID,USERID,LINKNAME,LINKURL,DESCRIBES,CATEGORY,ACTIVATE,CREATETIME,UPDATETIME FROM resource_links WHERE 1=1`
+	// 动态sql拼接
+	if activate == "" {
+		sqlStr += ` AND ACTIVATE = 1`
+		csqCountStr += ` AND ACTIVATE = 1`
+	} else if activate != "all" {
+		sqlStr += ` AND ACTIVATE = ` + activate
+		csqCountStr += ` AND ACTIVATE = ` + activate
+	}
+	if category != "" {
+		sqlStr += ` AND CATEGORY = ` + category
+		csqCountStr += ` AND CATEGORY = ` + category
+	}
+	// 分页
+	sqlStr += ` ORDER BY ID LIMIT ?, ?;`
+
+	// 查询记录总数,用于PageInfo信息
+	var total, pageNum int
+	totalRow, err := mysql.DB.Query(csqCountStr)
+	if err != nil {
+		log.Error("GetKnowledgePointListTotal error", err)
+		return nil, err
+	}
+	for totalRow.Next() {
+		err := totalRow.Scan(
+			&total,
+		)
+		if err != nil {
+			log.Error("GetKnowledgePointListTotal error", err)
+			continue
+		}
+	}
+	// 计算页数
+	if total%pageSize == 0 {
+		//
+		pageNum = total / pageSize
+	} else {
+		pageNum = total/pageSize + 1
+	}
+	pageInfo := NewPageInfo(page, pageSize, pageNum, total)
+
+	// 查询记录
+	rows, err := mysql.DB.Query(sqlStr, n, m)
 	if err != nil {
 		log.Error("exec  query failed, err", sqlStr, err)
 		return nil, err
@@ -60,7 +104,7 @@ func FindByResourceLinks() (*map[string]interface{}, error) {
 		items = append(items, item)
 	}
 
-	returns := NewResponse(items, nil)
+	returns := NewResponse(items, pageInfo)
 	return &returns, err
 }
 

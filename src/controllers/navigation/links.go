@@ -7,6 +7,7 @@ import (
 	"mana/src/models"
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
@@ -17,10 +18,15 @@ var log = config.Log()
 // 获取导航链接
 func GetResourceLinks(c *gin.Context) {
 	id := c.Param("id")
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	// 条件查询
+	activate := c.DefaultQuery("activate", "")
+	category := c.DefaultQuery("category", "")
 
 	// id 为空代表请求中没有传递id，则查询所有
 	if id == "" {
-		res, err := models.FindByResourceLinks()
+		res, err := models.FindByResourceLinks(pageSize, page, activate, category)
 		if err != nil {
 			msg := models.NewResMessage("500", "Query database failed")
 			c.JSON(http.StatusInternalServerError, msg)
