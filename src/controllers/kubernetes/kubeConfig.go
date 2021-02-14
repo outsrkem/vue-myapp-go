@@ -7,6 +7,7 @@ import (
 	"mana/src/config"
 	"mana/src/models"
 	"net/http"
+	"regexp"
 	"strconv"
 )
 
@@ -71,7 +72,21 @@ func GetKubeConfig(c *gin.Context) {
 
 // 删除集群配置
 func DelKubeConfig(c *gin.Context) {
-	configId, _ := strconv.Atoi(c.Query("config_id"))
+	configId := c.Param("cid")
+	matched, err := regexp.MatchString("^([1-9][0-9]{0,2})$", configId)
+	if err != nil {
+		msg := models.NewResMessage("500", "system exception")
+		c.JSON(http.StatusInternalServerError, msg)
+		log.Error("GetResourceLinks system exception")
+		return
+	}
+	// 参数校验
+	if !matched {
+		msg := models.NewResMessage("400", "The parameter ID must be an integer, ^([1-9][0-9]{0,2})$ ")
+		c.JSON(http.StatusBadRequest, msg)
+		log.Error("GetResourceLinks Query parameter exception, id: ", configId)
+		return
+	}
 	log.Info(configId)
 	row := models.DeleteKubeConfig(configId)
 	if row < 1 {

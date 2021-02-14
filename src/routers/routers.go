@@ -55,7 +55,7 @@ func Index(r *gin.Engine) {
 		v1Group.GET("/common/kubernetes/cluster", kubernetes.GetKubeConfig)
 
 		// 删除集群配置
-		v1Group.DELETE("/common/kubernetes/cluster", kubernetes.DelKubeConfig)
+		v1Group.DELETE("/common/kubernetes/cluster/:cid", kubernetes.DelKubeConfig)
 
 		// 获取k8s名称空间/common/kubernetes/cluster/:cid/work/namespaces
 		v1Group.GET("/common/kubernetes/cluster/:cid/namespaces", kubernetes.GetNamespace)

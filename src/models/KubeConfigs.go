@@ -139,7 +139,7 @@ func FindByKubeConfigs(uid string, pageSize int, page int) map[string]interface{
 }
 
 // 删除集群配置
-func DeleteKubeConfig(cid int) int64 {
+func DeleteKubeConfig(cid string) int64 {
 	sqlStr := `DELETE FROM kube_config WHERE ID=?;`
 	ret, err := mysql.DB.Exec(sqlStr, cid)
 	if err != nil {
